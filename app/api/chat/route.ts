@@ -1,21 +1,12 @@
-import { anthropic } from "@ai-sdk/anthropic";
-import { openai } from "@ai-sdk/openai";
+import { after } from "next/server";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { SYSTEM_PROMPTS, type Mode } from "@/lib/prompts";
+import { resolveModel } from "@/lib/ai/model";
 import { db } from "@/lib/db/client";
 import { messages as messagesTable } from "@/lib/db/schema";
+import { extractVocab } from "@/lib/extraction/extractVocab";
 
 export const maxDuration = 30;
-
-function resolveModel() {
-  const provider = (process.env.LLM_PROVIDER ?? "openai").toLowerCase();
-
-  if (provider === "anthropic") {
-    return anthropic(process.env.ANTHROPIC_MODEL ?? "claude-haiku-4-5");
-  }
-
-  return openai(process.env.OPENAI_MODEL ?? "gpt-4o-mini");
-}
 
 function extractPlainText(message: UIMessage): string {
   return message.parts
@@ -36,14 +27,18 @@ export async function POST(req: Request) {
     model: resolveModel(),
     system: systemPrompt,
     messages: await convertToModelMessages(messages),
-    onFinish: ({ text }) => {
+    onFinish: async ({ text }) => {
       const createdAt = Date.now();
-      db.insert(messagesTable)
-        .values([
-          { mode, role: "user", content: userContent, createdAt },
-          { mode, role: "assistant", content: text, createdAt },
-        ])
+
+      db.insert(messagesTable).values({ mode, role: "user", content: userContent, createdAt }).run();
+
+      const assistantResult = db
+        .insert(messagesTable)
+        .values({ mode, role: "assistant", content: text, createdAt })
         .run();
+      const assistantId = Number(assistantResult.lastInsertRowid);
+
+      after(() => extractVocab({ mode, assistantText: text, messageId: assistantId }));
     },
   });
 

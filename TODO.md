@@ -59,12 +59,23 @@ architecture-v2.md §7:n migraatiopolkua — tee järjestyksessä, koska myöhem
 - [x] Verifioitu: `npx tsc --noEmit` ja `npx eslint .` puhtaasti läpi; ad-hoc-ajolla vahvistettu
       migraation idempotenssi ja `messages`-taulun skeema oikeasta `.sqlite`-tiedostosta
 
-### Epic 2 — Sanaston poimintaputki
+### Epic 2 — Sanaston poimintaputki ✅ (2026-07-17)
 
-- [ ] `lib/db/schema.ts`: `vocabCards`- ja `reviewLog`-taulut (SRS-kentät, ks. architecture-v2.md §2.2)
-- [ ] `lib/extraction/extractVocab.ts`: `generateObject` + Zod-skeema, mode-kohtainen extraction-prompti
-- [ ] Next.js `after()`-hook `/api/chat`:iin extraction-kutsun ajamiseksi vastauksen striimauksen jälkeen
-- [ ] Manuaalinen tarkistus: syntyykö järkeviä sanakortteja suoraan tietokannasta katsottuna (ei UI:ta vielä)
+- [x] `lib/db/schema.ts`: `vocabCards`- ja `reviewLog`-taulut (SRS-kentät, ks. architecture-v2.md §2.2),
+      migraatio `drizzle/0001_talented_eternity.sql`
+- [x] `lib/extraction/extractVocab.ts`: `generateObject` + Zod-skeema, mode-kohtainen extraction-prompti
+      (huom: Zod-kentät `nullable()` eikä `optional()` — OpenAI structured output vaatii kaikki
+      kentät `required`-listassa; valinnaisuus ilmaistu `null`-arvolla)
+- [x] `lib/ai/model.ts`: `resolveModel()` siirretty jaettuun moduuliin (käytössä chat-reitissä ja
+      extraction-putkessa)
+- [x] Next.js `after()`-hook `/api/chat`:iin extraction-kutsun ajamiseksi vastauksen striimauksen jälkeen
+      (`onFinish` insertoi käyttäjä-/assistentti-viestit erikseen, ottaa assistentin `lastInsertRowid`:n
+      talteen, käynnistää `after(() => extractVocab(...))`)
+- [x] Manuaalinen tarkistus tehty oikealla LLM-kutsulla (curl `/api/chat`, conversation + phonetics):
+      järkeviä sanakortteja syntyi suoraan tietokantaan (esim. "Buongiorno"→"Hyvää huomenta",
+      "caffè"→"kahvi" context-selityksellä tuplakonsonantista). Pieni tunnettu artefakti: phonetics-tilassa
+      malli pilkkoi kerran sanan kahteen erilliseen Markdown-bold-spaniin (`**caf** **fè**`), josta syntyi
+      kaksi erillistä osakorttia — promptin virittämistä myöhemmin, ei koodivirhe.
 
 ### Epic 3 — Sanasto-UI
 
