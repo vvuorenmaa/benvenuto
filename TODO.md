@@ -46,13 +46,18 @@ Käyttäjä päätti laajentaa sovellusta merkittävästi: sanasto & kertaus, ki
 [docs/ux-dashboard-design.md](docs/ux-dashboard-design.md) (UX/layout). Alla olevat epiikat noudattavat
 architecture-v2.md §7:n migraatiopolkua — tee järjestyksessä, koska myöhemmät epiikat nojaavat aiempiin.
 
-### Epic 1 — DB-perusta
+### Epic 1 — DB-perusta ✅ (2026-07-17)
 
-- [ ] Asenna `drizzle-orm`, `drizzle-kit`, `better-sqlite3`
-- [ ] `lib/db/schema.ts`: `messages`-taulu
-- [ ] `lib/db/client.ts`: better-sqlite3 + drizzle-instanssi (singleton, hot-reload-turvallinen)
-- [ ] `data/benvenuto.sqlite` `.gitignore`:iin, `drizzle.config.ts` + ensimmäinen migraatio
-- [ ] `app/api/chat/route.ts`: persistoi käyttäjän/assistentin viestit `onFinish`-hookissa
+- [x] Asenna `drizzle-orm`, `drizzle-kit`, `better-sqlite3` (+ `@types/better-sqlite3`)
+- [x] `lib/db/schema.ts`: `messages`-taulu
+- [x] `lib/db/client.ts`: better-sqlite3 + drizzle-instanssi (singleton, hot-reload-turvallinen via
+      `globalThis`, ajaa migraatiot ohjelmallisesti alustuksessa)
+- [x] `data/*.sqlite`(+`-journal`/`-wal`/`-shm`) `.gitignore`:iin, `drizzle.config.ts` + ensimmäinen
+      migraatio (`drizzle/0000_magenta_zzzax.sql`, generoitu `npx drizzle-kit generate`)
+- [x] `app/api/chat/route.ts`: persistoi käyttäjän/assistentin viestit `onFinish`-hookissa
+      (poimii viimeisimmän user-viestin `parts`-taulukosta, batch-insert Drizzlellä)
+- [x] Verifioitu: `npx tsc --noEmit` ja `npx eslint .` puhtaasti läpi; ad-hoc-ajolla vahvistettu
+      migraation idempotenssi ja `messages`-taulun skeema oikeasta `.sqlite`-tiedostosta
 
 ### Epic 2 — Sanaston poimintaputki
 
