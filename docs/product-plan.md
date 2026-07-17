@@ -77,3 +77,34 @@ Kun perusmalli toimii lokaalisti, sovellukseen on tarkoitus lisätä:
 * **Text-to-Speech (TTS):** Selaimen puhesyntetisaattori lukemaan italiankieliset vastaukset ääneen.
 * **Speech-to-Text (STT):** Mahdollisuus vastata puhumalla kirjoittamisen sijaan.
 * **Lokaali LLM:** Vaihtoehtoinen API-reitti, joka käyttää Ollamaa (esim. Llama 3.1 tai Gemma 2), jolloin sovellus toimii täysin ilmaisena ja offline-tilassa.
+
+## 7. Laajennus v2 (2026-07-17)
+
+Ensimmäinen toimiva versio (pelkkä kolmen tilan chat) todettiin toiminnalliseksi mutta
+visuaalisesti ja sisällöllisesti suppeaksi. Käyttäjä päätti laajentaa sovellusta merkittävästi
+ennen jatkokehitystä. Päätökset:
+
+**Uudet ominaisuusalueet (priorisointijärjestyksessä):**
+
+1. **Sanasto & kertaus** — keskusteluista automaattisesti poimitut sanat/lauseet, spaced
+   repetition (SRS) -kertauskortit, selattava oma sanavarasto.
+2. **Kielioppikirjasto** — selattava/haettava referenssi (aikamuodot, pronominit, säännöt,
+   esimerkit), linkittyy chatissa käsiteltyihin aiheisiin.
+3. **Ääni (TTS/STT)** — tuodaan mukaan nyt, ei enää "Phase 2" -asiana: tekoälyn vastausten
+   kuunteleminen ja puhuttu vastaaminen kirjoittamisen sijaan.
+4. **Pelillistäminen (streakit/XP)** — tiedostettu tarve, mutta matala prioriteetti juuri nyt.
+   Arkkitehtuurissa varataan tälle tila (ks. architecture-v2.md §7), mutta sitä ei suunnitella
+   eikä toteuteta yksityiskohtaisesti tässä vaiheessa.
+
+**Visuaalinen suunta:** nykyinen täysin pelkistetty chat-näkymä ("miedosti sanottuna tylsä")
+korvataan **tietopainotteisella dashboardilla** — sivupalkki + kontekstipaneelit, jotka tuovat
+edistymisen, sanaston ja kielioppivihjeet näkyville chatin rinnalle. Ei pelillistä/Duolingo-
+tyylistä ulkoasua, ei myöskään täysin minimalistista lähestymistapaa.
+
+**Yksityiskohtaiset suunnitelmat:**
+
+* Tekninen arkkitehtuuri (tietovarasto, datamalli, uudet API-reitit, TTS/STT-valinnat,
+  migraatiopolku): [architecture-v2.md](./architecture-v2.md)
+* UX/käyttöliittymäsuunnitelma (sivurakenne, layout, näkymät, design-kieli, responsiivisuus):
+  [ux-dashboard-design.md](./ux-dashboard-design.md)
+* Konkreettiset tehtävät: [../TODO.md](../TODO.md)

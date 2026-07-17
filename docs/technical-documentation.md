@@ -62,7 +62,7 @@ promptien sisältö pysyy yhdessä paikassa (`lib/prompts.ts`).
 - Valitsee LLM-mallin `resolveModel()`-funktiolla ympäristömuuttujan `LLM_PROVIDER`
   perusteella (`"openai"` oletuksena, tai `"anthropic"`).
   - OpenAI: malli ympäristömuuttujasta `OPENAI_MODEL`, oletus `gpt-4o-mini`.
-  - Anthropic: malli ympäristömuuttujasta `ANTHROPIC_MODEL`, oletus `claude-3-5-haiku-20241022`.
+  - Anthropic: malli ympäristömuuttujasta `ANTHROPIC_MODEL`, oletus `claude-haiku-4-5`.
 - Kutsuu `streamText()` AI SDK:sta annetulla system-promptilla ja
   `convertToModelMessages(messages)`-muunnetuilla viesteillä.
 - Palauttaa vastauksen `result.toUIMessageStreamResponse()`-metodilla, joka striimaa
@@ -100,18 +100,20 @@ Tarvittavat/valinnaiset muuttujat (`.env.local`):
 | `OPENAI_API_KEY`     | Kyllä, jos `LLM_PROVIDER=openai`      | OpenAI-avain                                 |
 | `OPENAI_MODEL`       | Ei (oletus `gpt-4o-mini`)            | OpenAI-mallin nimi                           |
 | `ANTHROPIC_API_KEY`  | Kyllä, jos `LLM_PROVIDER=anthropic`   | Anthropic-avain                              |
-| `ANTHROPIC_MODEL`    | Ei (oletus `claude-3-5-haiku-20241022`) | Anthropic-mallin nimi                     |
+| `ANTHROPIC_MODEL`    | Ei (oletus `claude-haiku-4-5`) | Anthropic-mallin nimi                     |
 
 Esimerkkitiedosto: `.env.local.example` (ks. TODO — tekemättä toistaiseksi).
 
-## Tunnetut keskeneräisyydet / avoimet päätökset
+## v1 valmis, v2 suunnitteilla
 
-Katso ajantasainen tilanne [../TODO.md](../TODO.md). Lyhyesti:
+v1 (pelkkä kolmen tilan chat) on toteutettu ja todennettu: `app/page.tsx` sisältää
+tilanvalitsimen, `@tailwindcss/typography` on asennettu, `.env.local.example` on olemassa,
+ja `npm run dev` on todennettu toimivaksi (renderöinti, kaikki kolme tilaa, virheenkäsittely).
+Ajantasainen tilanne: [../TODO.md](../TODO.md).
 
-- `app/page.tsx` on vielä `create-next-app`:n oletussisällöllä — tilanvalitsin-UI puuttuu.
-- `.env.local.example` puuttuu.
-- `@tailwindcss/typography`-plugin asennus on kesken (tarvitaan `prose`-luokkien käyttöön
-  Markdown-sisällön tyylittelyssä `ChatPanel.tsx`:ssä) — vaihtoehtoisesti tyylit voidaan
-  toteuttaa ilman plugin-riippuvuutta.
-- Sovellusta ei ole vielä ajettu/testattu selaimessa kolmella eri tilalla.
-- Phase 2 -ominaisuudet (TTS, STT, lokaali Ollama-reitti) eivät ole vielä alkaneet.
+Käyttäjä päätti 2026-07-17 laajentaa sovellusta merkittävästi ennen jatkokehitystä (sanasto &
+kertaus, kielioppikirjasto, ääni TTS/STT, tietopainotteinen dashboard-UI). Näiden yksityiskohtainen
+tekninen suunnitelma (tietovarasto, datamalli, uudet API-reitit, migraatiopolku) on tiedostossa
+[architecture-v2.md](./architecture-v2.md), ja UX/layout-suunnitelma tiedostossa
+[ux-dashboard-design.md](./ux-dashboard-design.md). Näitä ei ole vielä toteutettu — ks.
+[../TODO.md](../TODO.md) konkreettisista tehtävistä.

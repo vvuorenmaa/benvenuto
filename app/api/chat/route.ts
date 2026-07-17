@@ -9,7 +9,7 @@ function resolveModel() {
   const provider = (process.env.LLM_PROVIDER ?? "openai").toLowerCase();
 
   if (provider === "anthropic") {
-    return anthropic(process.env.ANTHROPIC_MODEL ?? "claude-3-5-haiku-20241022");
+    return anthropic(process.env.ANTHROPIC_MODEL ?? "claude-haiku-4-5");
   }
 
   return openai(process.env.OPENAI_MODEL ?? "gpt-4o-mini");
