@@ -77,11 +77,24 @@ architecture-v2.md §7:n migraatiopolkua — tee järjestyksessä, koska myöhem
       malli pilkkoi kerran sanan kahteen erilliseen Markdown-bold-spaniin (`**caf** **fè**`), josta syntyi
       kaksi erillistä osakorttia — promptin virittämistä myöhemmin, ei koodivirhe.
 
-### Epic 3 — Sanasto-UI
+### Epic 3 — Sanasto-UI ✅ (2026-07-17)
 
-- [ ] `/api/vocab` (GET lista + `?due=`/`?q=` suodattimet, POST manuaalinen lisäys)
-- [ ] `/api/vocab/[id]` (PATCH, DELETE)
-- [ ] `app/(app)/sanasto/page.tsx`: lista, haku, suodatinchipit, CTA kertaukseen
+- [x] `/api/vocab` (GET lista + `?due=`/`?q=` suodattimet, POST manuaalinen lisäys) —
+      `lib/vocab/status.ts`:n `computeVocabStatus()` laskee `status`-kentän (`new`/`due`/`learned`);
+      `?due=true` on tarkoituksella laajempi joukko kuin `status==="due"` (sisältää myös uudet kortit,
+      koska niiden `dueAt` on heti nyt — tuleva kertaussessio Epic 4 käyttää tätä)
+- [x] `/api/vocab/[id]` (PATCH, DELETE) — Next.js 16:n async `params`-konvention mukaisesti
+- [x] `app/(app)/sanasto/page.tsx`: lista, debounced haku, suodatinchipit (Kaikki/Due nyt/Uudet/Opitut
+      client-puolella `status`-kentästä), CTA "Aloita kertaus" (näkyy kun due-määrä > 0, linkki
+      `/kertaus`:iin — 404 toistaiseksi, Epic 4:n asia), poistopainike per rivi
+- [x] Testattu oikealla datalla: API curl-testein (GET/POST/PATCH/DELETE) ja selaimessa Playwrightilla
+      (haku, suodatinklikkaus, light+dark-teema, konsolivirheet tarkistettu — ei virheitä)
+- [x] a11y-guardian-auditointi tehty ja korjattu uuteen sivuun: `aria-label` hakukenttään,
+      `aria-pressed` + fokusrengas suodatinchippeihin, `role="status"`/`aria-live="polite"`
+      lataus-/virhe-/tyhjätila-viesteihin. (Huom: samat puutteet — placeholder-only-inputit,
+      `aria-pressed`:in puute — havaittiin myös v1:n `app/page.tsx`:ssä/`ChatPanel.tsx`:ssä,
+      ei korjattu tässä epiikassa, koska ne ovat olemassa olevaa koodia scopen ulkopuolella;
+      mahdollinen erillinen a11y-siivous-tehtävä myöhemmin.)
 
 ### Epic 4 — SRS-kertaus
 
