@@ -5,7 +5,16 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import type { UIMessage } from "ai";
 import type { Mode } from "@/lib/prompts";
+import { GrammarTopicLink } from "@/components/GrammarTopicLink";
+
+function extractPlainText(message: UIMessage): string {
+  return message.parts
+    .filter((part) => part.type === "text")
+    .map((part) => part.text)
+    .join("");
+}
 
 export function ChatPanel({ mode }: { mode: Mode }) {
   const [input, setInput] = useState("");
@@ -45,18 +54,28 @@ export function ChatPanel({ mode }: { mode: Mode }) {
             className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm leading-relaxed whitespace-pre-wrap ${
-                message.role === "user"
-                  ? "bg-blue-600 text-white rounded-br-sm"
-                  : "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 rounded-bl-sm"
+              className={`flex max-w-[80%] flex-col gap-1 ${
+                message.role === "user" ? "items-end" : "items-start"
               }`}
             >
-              {message.parts.map((part, i) =>
-                part.type === "text" ? (
-                  <div key={i} className="prose prose-sm dark:prose-invert max-w-none">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{part.text}</ReactMarkdown>
-                  </div>
-                ) : null,
+              <div
+                className={`rounded-2xl px-4 py-2 text-sm leading-relaxed whitespace-pre-wrap ${
+                  message.role === "user"
+                    ? "bg-blue-600 text-white rounded-br-sm"
+                    : "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 rounded-bl-sm"
+                }`}
+              >
+                {message.parts.map((part, i) =>
+                  part.type === "text" ? (
+                    <div key={i} className="prose prose-sm dark:prose-invert max-w-none">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{part.text}</ReactMarkdown>
+                    </div>
+                  ) : null,
+                )}
+              </div>
+
+              {message.role === "assistant" && (
+                <GrammarTopicLink text={extractPlainText(message)} />
               )}
             </div>
           </div>

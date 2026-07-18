@@ -136,10 +136,20 @@ architecture-v2.md §7:n migraatiopolkua — tee järjestyksessä, koska myöhem
 - [x] a11y-guardian-auditointi tehty ja korjattu: "liittyvät sanat"-chippien `aria-label` lisätty
       kontekstiksi, tyhjän kategorian viestille `role="status" aria-live="polite"`
 
-### Epic 6 — Kielioppi↔chat-linkitys
+### Epic 6 — Kielioppi↔chat-linkitys ✅ (2026-07-18)
 
-- [ ] Tag-pohjainen osuma assistentin vastauksen ja `GRAMMAR_TOPICS.tags`:n välillä poiminnan yhteydessä
-- [ ] `components/GrammarTopicLink.tsx`: chippi viestin alla, näkyy vain kun osuma löytyy
+- [x] `lib/grammar/search.ts`: `findMatchingGrammarTopic(text)` — puhdas, ei-LLM tag-osumafunktio
+      (eniten osuvia tageja voittaa), käytettävissä sekä palvelimella että clientillä
+- [x] `lib/extraction/extractVocab.ts` kytketty: laskee osuman KERRAN per assistentin vastaus ja
+      täyttää `vocabCards.grammarTopicSlug`:n (aiemmin kovakoodattu `null`) — sulkee Epic 5:n
+      "Liittyvät sanat sanavarastossasi" -osion kehän, todennettu toimivaksi oikealla datalla
+- [x] `components/GrammarTopicLink.tsx`: "→ Aiheen nimi" -chippi, näkyy vain kun osuma löytyy,
+      kytketty `ChatPanel.tsx`:ään assistentin viestikuplan alapuolelle (ei käyttäjän viesteihin)
+- [x] Testattu koko ketju päästä päähän oikealla keskustelulla selaimessa: chat-viesti passato
+      prossimosta → "→ Passato prossimo" -chippi näkyy viestin alla → linkki `/kielioppi/passato-prossimo`
+      → sivun "Liittyvät sanat" -osio näyttää nyt oikeasti poimittuja sanakortteja. Ei konsolivirheitä
+      (myös ei-osuvalla viestillä testattu, ei riko mitään).
+- [x] a11y-guardian: ei korjattavaa (unicode-nuoli linkkitekstissä on WCAG-yhteensopiva sellaisenaan)
 
 ### Epic 7 — Ääni: STT
 

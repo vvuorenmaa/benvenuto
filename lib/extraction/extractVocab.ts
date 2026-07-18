@@ -3,6 +3,7 @@ import { z } from "zod";
 import { resolveModel } from "@/lib/ai/model";
 import { db } from "@/lib/db/client";
 import { vocabCards } from "@/lib/db/schema";
+import { findMatchingGrammarTopic } from "@/lib/grammar/search";
 import type { Mode } from "@/lib/prompts";
 
 // HUOM: kentät ovat `nullable()` (eivät `optional()`), koska OpenAI:n
@@ -92,6 +93,7 @@ export async function extractVocab({
     }
 
     const now = Date.now();
+    const matchedTopic = findMatchingGrammarTopic(assistantText);
 
     for (const candidate of object.candidates) {
       db.insert(vocabCards)
@@ -102,7 +104,7 @@ export async function extractVocab({
           context: candidate.context ?? null,
           sourceMode: mode,
           sourceMessageId: messageId,
-          grammarTopicSlug: null,
+          grammarTopicSlug: matchedTopic?.slug ?? null,
           createdAt: now,
           easeFactor: 2.5,
           intervalDays: 0,

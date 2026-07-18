@@ -36,3 +36,25 @@ export function getGrammarTopicsByCategory(): Record<GrammarTopic["category"], G
 export function getGrammarTopicBySlug(slug: string): GrammarTopic | undefined {
   return GRAMMAR_TOPICS.find((topic) => topic.slug === slug);
 }
+
+/**
+ * Etsii tekstistä parhaiten osuvan kielioppiaiheen tagien esiintymän perusteella.
+ * Puhdas, tekstipohjainen funktio (ei LLM-kutsua, ei DB-riippuvuutta) — käytettävissä
+ * sekä palvelimella (esim. sanaston poimintaputki) että clientillä.
+ *
+ * Palauttaa aiheen jolla on ENITEN osuvia tageja tekstissä, tai `undefined` jos
+ * yhtään tagia ei löydy.
+ */
+export function findMatchingGrammarTopic(text: string): GrammarTopic | undefined {
+  const lower = text.toLowerCase();
+  let best: { topic: GrammarTopic; hits: number } | undefined;
+
+  for (const topic of GRAMMAR_TOPICS) {
+    const hits = topic.tags.filter((tag) => lower.includes(tag.toLowerCase())).length;
+    if (hits > 0 && (!best || hits > best.hits)) {
+      best = { topic, hits };
+    }
+  }
+
+  return best?.topic;
+}
