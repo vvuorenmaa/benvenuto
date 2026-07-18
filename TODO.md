@@ -168,11 +168,23 @@ architecture-v2.md §7:n migraatiopolkua — tee järjestyksessä, koska myöhem
 - [x] a11y-guardian: lisätty `aria-live="polite"`-tilailmoitus (sr-only) tilanvaihdoista ja
       `motion-reduce:animate-none` pulssianimaatioihin
 
-### Epic 8 — Ääni: TTS
+### Epic 8 — Ääni: TTS ✅ (2026-07-18)
 
-- [ ] `/api/tts` (AI SDK `generateSpeech()`, palvelinpuolinen — ei selaimen `speechSynthesis`,
-      laatuperustelu ks. architecture-v2.md §5)
-- [ ] `components/AudioPlayButton.tsx`: toistopainike assistentin viestikuplissa, in-memory-audiovälimuisti
+- [x] `/api/tts` (AI SDK `generateSpeech()` + `openai.speech("tts-1")`, palvelinpuolinen — ei selaimen
+      `speechSynthesis`, laatuperustelu ks. architecture-v2.md §5). HUOM: valittu `tts-1` eikä uudempi
+      `gpt-4o-mini-tts`, koska jälkimmäinen ei tue numeerista `speed`-parametria (vain
+      luonnollisen kielen `instructions`) — hidastettu ääntäminen on ydinvaatimus. `speed` rajattu
+      sovelluskerroksessa OpenAI:n dokumentoituun 0.25–4.0-alueeseen
+- [x] `components/AudioPlayButton.tsx`: toistopainike assistentin viestikuplien yläreunassa (kuplan
+      sisällä, tekstisisällön yläpuolella, per ux-dashboard-design.md §3), moduulitason
+      in-memory-audiovälimuisti (`Map<messageId, blobUrl>`), tilat idle/loading/playing
+      (soi→pause-ikonivaihto, klikkaus playing-tilassa pysäyttää toiston)
+- [x] Testattu oikealla API-kutsulla (mp3-tiedosto todennettu `file`-komennolla, `speed`-parametrin
+      vaikutus vahvistettu tiedostokoon kasvulla) ja koko selainkulku Playwrightilla (chat-vastaus →
+      toistopainike → `/api/tts` 200 `audio/mpeg` → tila "Pysäytä toisto")
+- [x] a11y-guardian: lisätty `aria-live="polite"`-tilailmoitus (sr-only) samalla mallilla kuin
+      `MicButton.tsx`:ssä; painikkeen sijainti kuplan yläreunassa ja `new Audio()`-toteutus
+      (ei natiivi-media-näppäinten tukea) todettu hyväksyttäviksi hobbysovelluksen kontekstissa
 
 ### Epic 9 — Dashboard-kehys
 

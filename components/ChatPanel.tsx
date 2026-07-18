@@ -9,6 +9,7 @@ import type { UIMessage } from "ai";
 import type { Mode } from "@/lib/prompts";
 import { GrammarTopicLink } from "@/components/GrammarTopicLink";
 import { MicButton } from "@/components/MicButton";
+import { AudioPlayButton } from "@/components/AudioPlayButton";
 
 function extractPlainText(message: UIMessage): string {
   return message.parts
@@ -67,6 +68,14 @@ export function ChatPanel({ mode }: { mode: Mode }) {
                     : "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 rounded-bl-sm"
                 }`}
               >
+                {message.role === "assistant" && (
+                  <div className="flex justify-end mb-1">
+                    <AudioPlayButton
+                      text={extractPlainText(message)}
+                      messageId={message.id}
+                    />
+                  </div>
+                )}
                 {message.parts.map((part, i) =>
                   part.type === "text" ? (
                     <div key={i} className="prose prose-sm dark:prose-invert max-w-none">
