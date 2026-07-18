@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import ReactMarkdown from "react-markdown";
@@ -18,9 +18,16 @@ function extractPlainText(message: UIMessage): string {
     .join("");
 }
 
-export function ChatPanel({ mode }: { mode: Mode }) {
+export function ChatPanel({
+  mode,
+  onAssistantMessage,
+}: {
+  mode: Mode;
+  onAssistantMessage?: (text: string) => void;
+}) {
   const [input, setInput] = useState("");
   const [isRecording, setIsRecording] = useState(false);
+  const notifiedMessageId = useRef<string | null>(null);
 
   const transport = useMemo(
     () =>
@@ -34,6 +41,17 @@ export function ChatPanel({ mode }: { mode: Mode }) {
   const { messages, sendMessage, status } = useChat({ transport });
 
   const isBusy = status === "submitted" || status === "streaming";
+
+  useEffect(() => {
+    if (status !== "ready" || messages.length === 0) return;
+
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage.role !== "assistant") return;
+    if (notifiedMessageId.current === lastMessage.id) return;
+
+    notifiedMessageId.current = lastMessage.id;
+    onAssistantMessage?.(extractPlainText(lastMessage));
+  }, [messages, status, onAssistantMessage]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

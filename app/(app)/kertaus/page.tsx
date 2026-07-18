@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { StatTile } from "@/components/StatTile";
 
 type VocabStatus = "new" | "due" | "learned";
 
@@ -248,12 +249,7 @@ export default function KertausPage() {
           className="flex flex-col items-center gap-4 text-center"
         >
           <p className="text-lg font-semibold">Kertaus valmis! ✅</p>
-          <p className="text-sm text-neutral-500">
-            <span className="font-mono">
-              {cards.length} / {cards.length}
-            </span>{" "}
-            käyty läpi
-          </p>
+          <StatTile value={`${cards.length} / ${cards.length}`} label="käyty läpi" />
           <div className="flex gap-3 mt-2">
             <Link
               href="/sanasto"

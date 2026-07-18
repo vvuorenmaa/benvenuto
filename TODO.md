@@ -186,16 +186,48 @@ architecture-v2.md §7:n migraatiopolkua — tee järjestyksessä, koska myöhem
       `MicButton.tsx`:ssä; painikkeen sijainti kuplan yläreunassa ja `new Audio()`-toteutus
       (ei natiivi-media-näppäinten tukea) todettu hyväksyttäviksi hobbysovelluksen kontekstissa
 
-### Epic 9 — Dashboard-kehys
+### Epic 9 — Dashboard-kehys ✅ (2026-07-18) — VIIMEINEN v2-epiikka, v2-laajennus valmis
 
-- [ ] `app/(app)/layout.tsx`: sivupalkki + topbar (ks. ux-dashboard-design.md §2), nykyinen
-      `app/page.tsx` siirtyy route groupin sisään `(app)/page.tsx`:ksi
-- [ ] Sivupalkin navigaatio (Keskustelu/Sanasto/Kertaus/Kielioppi) + due-määrän badge
-- [ ] Oikea kontekstipaneeli Keskustelu-näkymässä (uudet sanat, liittyvä kielioppiaihe)
-- [ ] Responsiivisuus: alapalkki-navigaatio + bottom sheet -kontekstipaneeli alle `md`-breakpointin
-      (ks. ux-dashboard-design.md §8)
-- [ ] Design-kielen stat tile -komponentti, SRS-tilojen värikoodaus (sininen/amber/vihreä),
-      ks. ux-dashboard-design.md §7
+- [x] `app/(app)/layout.tsx`: sivupalkkikehys (topbar on kontekstuaalinen, jokainen sivu renderöi
+      oman otsikkonsa kuten ennenkin — ei jaettua topbar-komponenttia, ks. perustelu alla).
+      `app/page.tsx` siirretty `git mv`:llä `app/(app)/page.tsx`:ksi (historia säilyi).
+      Mode-tilan URL-query-synkronointi (ux-dashboard-design.md §1:n maininta) jätettiin
+      TIETOISESTI pois — ei ollut TODO.md:n eksplisiittisellä listalla, `useState<Mode>` riittää.
+- [x] `components/Sidebar.tsx`: desktop-sivupalkki (`md:flex`) + mobiili-alapalkki (`md:hidden`,
+      sama komponentti/data), aktiivi-tila `pathname.startsWith()`-logiikalla (erikoistapaus `/`:lle),
+      due-määrä-badge Kertaus-kohdassa (client-fetch `/api/vocab?due=true`, refetch `pathname`:n
+      muuttuessa). Streak-/XP-indikaattori TIETOISESTI jätetty pois — ei oikeaa dataa vielä
+      (pelillistäminen on backlogissa), keksityn luvun näyttäminen olisi harhaanjohtavaa.
+- [x] `components/ContextPanel.tsx`: oikea kontekstipaneeli VAIN Keskustelu-näkymässä (`lg:flex`
+      desktopissa, kelluva painike + bottom sheet alle `lg`:n). "Uusia sanoja" (StatTile + lista,
+      suodatettu istunnon aloitusajan mukaan, refetch 2.5s viiveellä assistentin vastauksen jälkeen)
+      ja "Liittyvä kielioppi" (`findMatchingGrammarTopic` samalla logiikalla kuin `GrammarTopicLink`).
+      Bottom sheet: `role="dialog" aria-modal="true"` + oikea Tab-fokusloukku + Escape-sulkeminen +
+      fokuksen palautus. Todennettu päästä päähän oikealla keskustelulla: chat-chippi ja
+      kontekstipaneelin "Liittyvä kielioppi" näyttävät saman aiheen synkronoidusti.
+- [x] `components/StatTile.tsx`: jaettu design-kielen komponentti (§7), käytössä kontekstipaneelissa
+      ja retrofitattu kertaus-sivun session-loppu-yhteenvetoon (sanasto-sivun otsikko jätettiin
+      ennalleen — StatTile ei sopinut luontevasti kapealle otsikkoriville)
+- [x] Responsiivisuus (§8): alapalkki-navigaatio + bottom sheet toteutettu ja testattu Playwrightilla
+      kolmella leveydellä (mobiili 500px, tablet 900px, desktop 1400px) — löytyi ja korjattiin
+      todellinen bugi: kelluva kontekstipainike meni päällekkäin Lähetä-napin kanssa kapeilla
+      näytöillä (tarkistettu bounding boxeilla, ei vain silmämääräisesti), korjattu offsetit
+- [x] Täysi `npm run build` -tuotantobuild vihreä, kaikki reitit (`/`, `/sanasto`, `/kertaus`,
+      `/kielioppi`, `/kielioppi/[aihe]`) todennettu 200:ksi rakenteellisen siirron jälkeen
+- [x] a11y-guardian: focus-trap toteutettu ja verifioitu Playwrightilla (15× Tab ei koskaan
+      karannut sheetin ulkopuolelle, Escape palautti fokuksen oikein), mobiilinavin due-badge
+      -saavutettavuus korjattu (`aria-label` sisälsi lukumäärän, joka oli aiemmin piilotettu
+      ruudunlukijalta). Kaksoisnavigaatio-huomio (sama nav kahdesti DOM:ssa CSS-breakpointeilla
+      piilotettuna) todettu vaarattomaksi — Tailwindin `hidden`-luokka on `display:none`, joka
+      poistaa elementin saavutettavuuspuusta/tab-järjestyksestä automaattisesti selaimessa,
+      ei vaadi lisä-JS:ää.
+
+## v2-laajennus valmis (2026-07-18)
+
+Kaikki 9 epiikkaa (DB-perusta → sanaston poiminta → sanasto-UI → SRS-kertaus → kielioppikirjasto →
+kielioppi↔chat-linkitys → STT → TTS → dashboard-kehys) on toteutettu, testattu ja committoitu
+`main`-haaraan. Ks. "Backlogissa, ei osa v2-laajuutta" -osio jäljellä olevista tietoisesti
+rajatuista kohteista (pelillistäminen, lokaali LLM).
 
 ### Backlogissa, ei osa v2-laajuutta
 
