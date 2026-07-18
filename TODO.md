@@ -96,11 +96,23 @@ architecture-v2.md §7:n migraatiopolkua — tee järjestyksessä, koska myöhem
       ei korjattu tässä epiikassa, koska ne ovat olemassa olevaa koodia scopen ulkopuolella;
       mahdollinen erillinen a11y-siivous-tehtävä myöhemmin.)
 
-### Epic 4 — SRS-kertaus
+### Epic 4 — SRS-kertaus ✅ (2026-07-18)
 
-- [ ] `lib/db/srs.ts`: SM-2-algoritmi puhtaana funktiona (`computeNextReview`)
-- [ ] `/api/vocab/review` (POST arvosana → uusi ease/interval/dueAt)
-- [ ] `app/(app)/kertaus/page.tsx`: flashcard-kulku (ks. ux-dashboard-design.md §5)
+- [x] `lib/db/srs.ts`: SM-2-algoritmi puhtaana funktiona (`computeNextReview`) — HUOM tietoinen
+      poikkeama klassisesta SM-2:sta: UI:ssa on vain kolme arviointinappia (Vaikea/Hyvä/Helppo,
+      kaikki "onnistunut muistaminen" eri vaikeusasteilla), joten `repetitions` ei koskaan nollaudu
+      (ei "again"-nappia). Verifioitu ad-hoc-testillä: intervallit kasvavat odotetusti (1→6→15+ päivää)
+      ja `easeFactor` clampautuu minimiin 1.3.
+- [x] `/api/vocab/review` (POST arvosana → uusi ease/interval/dueAt, kirjaa `review_log`-rivin)
+- [x] `app/(app)/kertaus/page.tsx`: flashcard-kulku (lataus→aloitus→etupuoli→paljastettu→loppu,
+      ks. ux-dashboard-design.md §5) — "Seuraava kertaus: huomenna N sanalle" -rivi jätetty
+      tietoisesti pois (vaatisi ylimääräistä ennustelaskentaa, ei tämän epiikan laajuudessa)
+- [x] Testattu: SM-2-yksikkötestit + oikea API-kutsu curlilla, ja koko flashcard-kulku Playwrightilla
+      selaimessa (63 due-korttia, kortin vaihto, kaikki kolme arviointinappia, ei konsolivirheitä)
+- [x] a11y-guardian-auditointi tehty ja korjattu: fokushallinta siirtää fokuksen oikeaan nappiin
+      jokaisen vaiheenvaihdon jälkeen (`useRef`+`useEffect`, verifioitu Playwrightilla), kortin
+      sisältöalue `role="status" aria-live="polite"` (ilmoittaa kortin vaihtumisen/vastauksen
+      paljastumisen), progressipalkki `role="progressbar"` + `aria-valuenow`/`aria-valuemax`
 
 ### Epic 5 — Kielioppikirjasto
 
