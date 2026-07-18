@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import type { Mode } from "@/lib/prompts";
 
 export function ChatPanel({ mode }: { mode: Mode }) {
@@ -53,7 +54,7 @@ export function ChatPanel({ mode }: { mode: Mode }) {
               {message.parts.map((part, i) =>
                 part.type === "text" ? (
                   <div key={i} className="prose prose-sm dark:prose-invert max-w-none">
-                    <ReactMarkdown>{part.text}</ReactMarkdown>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{part.text}</ReactMarkdown>
                   </div>
                 ) : null,
               )}

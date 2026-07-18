@@ -114,12 +114,27 @@ architecture-v2.md §7:n migraatiopolkua — tee järjestyksessä, koska myöhem
       sisältöalue `role="status" aria-live="polite"` (ilmoittaa kortin vaihtumisen/vastauksen
       paljastumisen), progressipalkki `role="progressbar"` + `aria-valuenow`/`aria-valuemax`
 
-### Epic 5 — Kielioppikirjasto
+### Epic 5 — Kielioppikirjasto ✅ (2026-07-18)
 
-- [ ] `lib/grammar/topics.ts`: alkuperäinen aihejoukko (passato prossimo, pronomi indiretti,
-      painotukset, gli/gn — PRD:n mainitsemat haasteet)
-- [ ] `lib/grammar/search.ts`: kevyt in-memory-haku/suodatus
-- [ ] `app/(app)/kielioppi/page.tsx` (kategoriat + haku) ja `app/(app)/kielioppi/[aihe]/page.tsx`
+- [x] `lib/grammar/topics.ts`: 5 aihetta — passato prossimo (aikamuodot), pronomi indiretti
+      (pronominit), painotus + gli/gn + tuplakonsonantit (ääntäminen). `säännöt`-kategoria
+      varattu mutta tyhjä toistaiseksi (ei vielä sisältöä)
+- [x] `lib/grammar/search.ts`: `searchGrammarTopics`, `getGrammarTopicsByCategory` (palauttaa
+      kaikki 4 kategoriaa avaimina myös tyhjänä), `getGrammarTopicBySlug` — kevyt in-memory-haku
+- [x] `app/(app)/kielioppi/page.tsx` (kategoriasarakkeet + reaaliaikainen client-haku, ei API-reittiä
+      koska data on staattinen moduulitason import) ja `app/(app)/kielioppi/[aihe]/page.tsx`
+      (Server Component, `notFound()` tuntemattomalle slugille, "Liittyvät sanat sanavarastossasi"
+      -osio suoralla DB-kyselyllä `grammarTopicSlug`:n perusteella — tyhjä toistaiseksi, Epic 6
+      täyttää kentän myöhemmin, osio piilotetaan kun ei osumia)
+- [x] **Bugikorjaus tehty samalla**: `remark-gfm`-riippuvuus puuttui, jolloin Markdown-taulukot
+      (kielioppisisällön "Esimerkkejä"-osiot) renderöityivät raakana tekstinä eivätkä taulukkoina.
+      Asennettu `remark-gfm`, lisätty `remarkPlugins={[remarkGfm]}` SEKÄ uuteen aihe-sivuun ETTÄ
+      `components/ChatPanel.tsx`:ään (sama piilevä bugi olisi vaikuttanut myös chat-vastausten
+      mahdollisiin taulukoihin)
+- [x] Testattu Playwrightilla selaimessa (etusivu, kategoriasarakkeet, haku, aihe-sivu, taulukon
+      renderöinti korjauksen jälkeen, 404-tapaus) — ei konsolivirheitä
+- [x] a11y-guardian-auditointi tehty ja korjattu: "liittyvät sanat"-chippien `aria-label` lisätty
+      kontekstiksi, tyhjän kategorian viestille `role="status" aria-live="polite"`
 
 ### Epic 6 — Kielioppi↔chat-linkitys
 
