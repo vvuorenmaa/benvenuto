@@ -264,28 +264,27 @@ kirjoitus tarpeen mukaan, a11y-guardian-tarkistus lopuksi, testaus ja commit jok
       selityksen koko konseptista (spaced repetition -periaate: helpot/oikein muistetut sanat
       palaavat harvemmin, vaikeat useammin) — kevyt, ei raskas onboarding-modaali/tour-kirjasto
 
-### Epic 11 — Kielioppikirjaston laaja laajennus
+### Epic 11 — Kielioppikirjaston laaja laajennus ✅ (2026-07-18)
 
-- [ ] Lisätään ~18 uutta aihetta `lib/grammar/topics.ts`:iin, täyttäen tyhjän "Säännöt"-kategorian ja
-      laajentaen aikamuodot/pronominit-kategorioita. Sama rakenne/tyyli kuin olemassa olevat 5 aihetta
-      (Mikä se on / Muodostus / Poikkeukset / Esimerkkejä, suomeksi selitetty, italiankieliset
-      esimerkit, `tags`-kentät joita `findMatchingGrammarTopic()` käyttää chat-linkitykseen):
-      - *Aikamuodot* (nyt: passato-prossimo): presente indicativo, imperfetto (vs. passato prossimo
-        -ero klassinen sekaannus), futuro semplice, condizionale presente ("vorrei"), imperativo,
-        trapassato prossimo
-      - *Pronominit* (nyt: pronomi-indiretti): pronomi diretti (mi/ti/lo/la/ci/vi/li/le), pronomi
-        possessivi (il mio/la tua), "ci" ja "ne" (paikka-/määräpartikkelit), pronomi riflessivi
-      - *Säännöt* (nyt: TYHJÄ): artikkelit (il/lo/la/i/gli/le + gli:n erikoistapaukset), prepositiot +
-        artikkeloidut prepositiot (nel/sulla/dell), monikon muodostus (-o→-i, -a→-e, poikkeukset),
-        adjektiivien taipuminen ja sijainti, komparatiivi/superlatiivi, c'è/ci sono, negaatio
-        (kaksoiskielto)
-      - *Ääntäminen* (nyt: painotus, gli-gn, tuplakonsonantit): c/g pehmeät vs. kovat äänteet
-        (ce/ci vs ca/co/cu, ge/gi vs ga/go/gu)
-- [ ] Tarkistetaan `lib/grammar/search.ts`:n `getGrammarTopicsByCategory()` toimii yhä oikein isommalla
-      aihemäärällä (pitäisi toimia sellaisenaan, puhdas funktio ei riipu määrästä)
-- [ ] `app/(app)/kielioppi/page.tsx`:n kategoriasarake-layout (nyt `grid-cols-4`) tarkistetaan
-      visuaalisesti isommalla sisältömäärällä (5-6 aihetta per kategoria voi tarvita
-      vieritystä/tiiviimpää listausta — pieni UI-tarkistus, ei arkkitehtuurimuutos)
+- [x] Lisätty 18 uutta aihetta `lib/grammar/topics.ts`:iin (5→23 yhteensä), täyttäen tyhjän
+      "Säännöt"-kategorian (0→7) ja laajentaen muita: aikamuodot 1→7, pronominit 1→5, ääntäminen 3→4.
+      Sama rakenne/tyyli kuin alkuperäiset 5 aihetta (Mikä se on / Muodostus / Poikkeukset /
+      Esimerkkejä, suomeksi selitetty, italiankieliset esimerkit, `tags`-kentät). Sisältö kirjoitettiin
+      kahdessa erässä tarkkojen kielioppifaktojen pohjalta (annettu agenteille eksplisiittisesti, ei
+      jätetty mallin oman tietämyksen varaan) — pistokoetarkistettu oikeaksi (mm. artikkeloidut
+      prepositiot -taulukko, imperfetto vs. passato prossimo -kontrasti).
+      - *Aikamuodot* (+6): presente-indicativo, imperfetto, futuro-semplice, condizionale-presente,
+        imperativo, trapassato-prossimo
+      - *Pronominit* (+4): pronomi-diretti, pronomi-possessivi, ci-ne, pronomi-riflessivi
+      - *Säännöt* (+7, oli tyhjä): artikkelit, prepositiot-artikoloidut, monikko,
+        adjektiivit-taipuminen, komparatiivi-superlatiivi, ce-ci-sono, negaatio
+      - *Ääntäminen* (+1): c-g-aanteet
+- [x] `lib/grammar/search.ts`:n `getGrammarTopicsByCategory()` verifioitu toimivaksi oikein isommalla
+      aihemäärällä (aikamuodot=7, pronominit=5, säännöt=7, ääntäminen=4)
+- [x] `app/(app)/kielioppi/page.tsx`:n `grid-cols-4`-layout testattu visuaalisesti Playwrightilla
+      23 aiheella — kestää hyvin, ei tarvinnut layout-muutosta
+- [x] Täysi `npm run build` vihreä, selaintestattu (etusivu, haku, uusi aihesivu
+      `/kielioppi/prepositiot-artikoloidut`) — ei konsolivirheitä, taulukot renderöityvät oikein
 
 ### Epic 12 — Keskustelun säilyttäminen sivunvaihdon yli
 
