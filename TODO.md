@@ -151,12 +151,22 @@ architecture-v2.md §7:n migraatiopolkua — tee järjestyksessä, koska myöhem
       (myös ei-osuvalla viestillä testattu, ei riko mitään).
 - [x] a11y-guardian: ei korjattavaa (unicode-nuoli linkkitekstissä on WCAG-yhteensopiva sellaisenaan)
 
-### Epic 7 — Ääni: STT
+### Epic 7 — Ääni: STT ✅ (2026-07-18)
 
-- [ ] `components/MicButton.tsx`: `MediaRecorder`-nauhoitus, ei automaattilähetystä
-- [ ] `/api/stt` (AI SDK `transcribe()`, ks. architecture-v2.md §5 — EI selaimen `SpeechRecognition`,
-      koska se korjaa ääntämisvirheet piiloon; ristiriidassa Fonetista-tilan tarkoituksen kanssa)
-- [ ] Transkriptio täyttää syöttökentän, käyttäjä tarkistaa ennen lähetystä
+- [x] `components/MicButton.tsx`: `MediaRecorder`-nauhoitus (idle/recording/transcribing-tilakone),
+      ei automaattilähetystä, vapauttaa mikrofonin (`stream.getTracks().stop()`) nauhoituksen jälkeen
+- [x] `/api/stt` (AI SDK `transcribe()` + `openai.transcription("whisper-1")`, ks. architecture-v2.md §5
+      — EI selaimen `SpeechRecognition`, koska se korjaa ääntämisvirheet piiloon; ristiriidassa
+      Fonetista-tilan tarkoituksen kanssa). HUOM tekninen löydös: `transcribe()` (ai@7.0.30) päättelee
+      audion mediatyypin automaattisesti tavusignatuurista, ei erillistä `mediaType`-parametria
+- [x] Transkriptio täyttää syöttökentän (yhdistetään olemassa olevaan tekstiin), käyttäjä tarkistaa
+      ennen lähetystä; STT käyttää AINA OpenAI:ta riippumatta `LLM_PROVIDER`-asetuksesta (Anthropic ei
+      tarjoa transkriptiomalleja)
+- [x] Testattu oikealla äänidatalla: `ffmpeg`-generoidut WAV/webm-näytteet API-tasolla, ja koko
+      selainkulku (idle→recording→transcribing→idle, placeholder "Kuuntelen...", tekstikentän täyttö)
+      Playwrightilla Chromiumin fake-mikrofonilipuilla (`--use-fake-device-for-media-stream`)
+- [x] a11y-guardian: lisätty `aria-live="polite"`-tilailmoitus (sr-only) tilanvaihdoista ja
+      `motion-reduce:animate-none` pulssianimaatioihin
 
 ### Epic 8 — Ääni: TTS
 

@@ -8,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import type { UIMessage } from "ai";
 import type { Mode } from "@/lib/prompts";
 import { GrammarTopicLink } from "@/components/GrammarTopicLink";
+import { MicButton } from "@/components/MicButton";
 
 function extractPlainText(message: UIMessage): string {
   return message.parts
@@ -18,6 +19,7 @@ function extractPlainText(message: UIMessage): string {
 
 export function ChatPanel({ mode }: { mode: Mode }) {
   const [input, setInput] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
 
   const transport = useMemo(
     () =>
@@ -94,6 +96,13 @@ export function ChatPanel({ mode }: { mode: Mode }) {
         onSubmit={handleSubmit}
         className="flex items-end gap-2 border-t border-neutral-200 dark:border-neutral-800 p-4"
       >
+        <MicButton
+          onTranscript={(text) =>
+            setInput((prev) => (prev.trim() ? `${prev.trim()} ${text}` : text))
+          }
+          onRecordingChange={setIsRecording}
+          disabled={isBusy}
+        />
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -103,7 +112,7 @@ export function ChatPanel({ mode }: { mode: Mode }) {
               handleSubmit(e);
             }
           }}
-          placeholder="Kirjoita viestisi..."
+          placeholder={isRecording ? "Kuuntelen..." : "Kirjoita viestisi..."}
           rows={1}
           className="flex-1 resize-none rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
