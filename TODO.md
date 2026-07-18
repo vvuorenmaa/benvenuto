@@ -237,6 +237,84 @@ rajatuista kohteista (pelillistäminen, lokaali LLM).
 - [ ] Lokaali LLM -reitti Ollaman kautta (esim. Llama 3.1 / Gemma 2), täysin offline-/ilmaiskäyttöä
       varten — alkuperäisen PRD:n Phase 2 -kohta, ei aikataulutettu
 
+## Laajennus v3 (suunniteltu 2026-07-18, ei vielä toteutettu)
+
+Käyttäjä testasi v2-laajennusta ja nosti kaksi konkreettista puutetta + yhden lisähuomion, ja pyysi
+avoimesti lisää ominaisuusideoita. Tausta ja perustelut: [docs/product-plan.md](docs/product-plan.md)
+§8. TÄMÄ ON VASTA DOKUMENTOITU SUUNNITELMA — mitään alla olevista epiikoista ei ole aloitettu, kaikki
+rivit ovat `[ ]`-tilassa. Toteutus tehdään myöhemmin epiikka kerrallaan, kun käyttäjä antaa luvan
+(sama malli kuin v2:n epiikat, sama agenttityönjako: ux-designer UI-tekstit/komponentit, sisällön
+kirjoitus tarpeen mukaan, a11y-guardian-tarkistus lopuksi, testaus ja commit joka epiikan jälkeen).
+
+### Epic 10 — Kertauksen selkeytys
+
+- [ ] Aloitusruutuun (`app/(app)/kertaus/page.tsx`:n "start"-vaihe) lyhyt selittävä kappale: kertaus
+      on itsetestausta, yritä muistaa suomennos mielessäsi ennen "Näytä vastaus" -painiketta
+- [ ] Kortin etupuolelle (front-vaihe) pieni ohjeteksti/muistutus samasta asiasta (esim.
+      `text-xs text-zinc-500` -rivi kortin yläpuolella: "Mieti suomennos ennen kuin paljastat sen")
+- [ ] Kolmelle arviointinapille (Vaikea/Hyvä/Helppo) lyhyt selite siitä mitä NE TARKOITTAVAT käyttäjän
+      OMAN muistamiskokemuksen kannalta (ei tekninen SRS-selitys) — esim. pieni `text-xs`-alarivi
+      jokaisen napin alla: Vaikea = "En muistanut / jouduin arvaamaan", Hyvä = "Muistin pienellä
+      miettimisellä", Helppo = "Muistin heti"
+- [ ] Palaute arvioinnin jälkeen: näytä lyhyesti mitä arviointi teki ajoitukselle, esim. pieni
+      toast/teksti "Näet tämän sanan uudelleen ~N päivän päästä" käyttäen `/api/vocab/review`:n JO
+      palauttamaa `intervalDays`-arvoa (data on olemassa, ei vaadi backend-muutoksia — vain UI:n
+      pitää käyttää sitä, joka tällä hetkellä heitetään pois `.then()`-ketjussa)
+- [ ] Pieni "Miten tämä toimii?" -info-linkki/painike kertaus-sivun aloitusruudussa, joka avaa lyhyen
+      selityksen koko konseptista (spaced repetition -periaate: helpot/oikein muistetut sanat
+      palaavat harvemmin, vaikeat useammin) — kevyt, ei raskas onboarding-modaali/tour-kirjasto
+
+### Epic 11 — Kielioppikirjaston laaja laajennus
+
+- [ ] Lisätään ~18 uutta aihetta `lib/grammar/topics.ts`:iin, täyttäen tyhjän "Säännöt"-kategorian ja
+      laajentaen aikamuodot/pronominit-kategorioita. Sama rakenne/tyyli kuin olemassa olevat 5 aihetta
+      (Mikä se on / Muodostus / Poikkeukset / Esimerkkejä, suomeksi selitetty, italiankieliset
+      esimerkit, `tags`-kentät joita `findMatchingGrammarTopic()` käyttää chat-linkitykseen):
+      - *Aikamuodot* (nyt: passato-prossimo): presente indicativo, imperfetto (vs. passato prossimo
+        -ero klassinen sekaannus), futuro semplice, condizionale presente ("vorrei"), imperativo,
+        trapassato prossimo
+      - *Pronominit* (nyt: pronomi-indiretti): pronomi diretti (mi/ti/lo/la/ci/vi/li/le), pronomi
+        possessivi (il mio/la tua), "ci" ja "ne" (paikka-/määräpartikkelit), pronomi riflessivi
+      - *Säännöt* (nyt: TYHJÄ): artikkelit (il/lo/la/i/gli/le + gli:n erikoistapaukset), prepositiot +
+        artikkeloidut prepositiot (nel/sulla/dell), monikon muodostus (-o→-i, -a→-e, poikkeukset),
+        adjektiivien taipuminen ja sijainti, komparatiivi/superlatiivi, c'è/ci sono, negaatio
+        (kaksoiskielto)
+      - *Ääntäminen* (nyt: painotus, gli-gn, tuplakonsonantit): c/g pehmeät vs. kovat äänteet
+        (ce/ci vs ca/co/cu, ge/gi vs ga/go/gu)
+- [ ] Tarkistetaan `lib/grammar/search.ts`:n `getGrammarTopicsByCategory()` toimii yhä oikein isommalla
+      aihemäärällä (pitäisi toimia sellaisenaan, puhdas funktio ei riipu määrästä)
+- [ ] `app/(app)/kielioppi/page.tsx`:n kategoriasarake-layout (nyt `grid-cols-4`) tarkistetaan
+      visuaalisesti isommalla sisältömäärällä (5-6 aihetta per kategoria voi tarvita
+      vieritystä/tiiviimpää listausta — pieni UI-tarkistus, ei arkkitehtuurimuutos)
+
+### Epic 12 — Keskustelun säilyttäminen sivunvaihdon yli
+
+- [ ] Käyttäjän huomio: keskustelu katoaa jos Keskustelu-näkymästä siirtyy toiselle sivulle (esim.
+      juuri `GrammarTopicLink`/kontekstipaneelin "Avaa aihe" -linkin kautta Kielioppiin) ja palaa
+      takaisin — `ChatPanel.tsx`:n `useChat()`-tila on paikallinen komponenttitila joka tuhoutuu
+      `app/(app)/page.tsx`:n unmounttautuessa. Viestit TALLENNETAAN kyllä DB:hen (Epic 1), mutta niitä
+      ei ladata takaisin UI:hin.
+- [ ] Korjaussuunta: nosta `useChat`-tila (yksi per `Mode`, koska tilanvaihto tarkoituksella resetoi
+      keskustelun PRD:n mukaisesti — tämä säilyy ennallaan) `app/(app)/layout.tsx`-tason
+      Context-provideriin, joka EI unmounttaudu sisarsivujen välillä navigoitaessa. Vain täysi
+      sivulatauksen uudelleenkäynnistys resetoisi tilan, mikä on hyväksyttävää.
+- [ ] HUOM: tämä on ERI ominaisuus kuin alempi "chat-historian selaus" -ideakandidaatti (joka koskisi
+      VANHOJEN, päättyneiden keskustelujen selaamista DB:stä) — tässä on kyse vain KESKEN olevan
+      istunnon säilymisestä saman selainsession sisällä.
+
+### Harkittavat lisäominaisuudet (ei sitoumusta, kandidaatteja myöhempään priorisointiin)
+
+- [ ] Kevyt tilastonäkymä/kertaushistoria — EI pelillistämistä (streak/XP on jo tietoisesti
+      backlogissa alla), vaan puhtaasti informatiivinen: montako sanaa kerrattu tänään/viikossa,
+      laskettavissa suoraan `review_log`-taulusta ilman skeemamuutoksia
+- [ ] Kielioppikvizit per aihe — pieni monivalintakoe joka testaa KIELIOPPISÄÄNNÖN ymmärrystä,
+      erottuu vocab-flashcardeista jotka testaavat sanastoa
+- [ ] Chat-historian selaus (VANHOJEN, päättyneiden keskustelujen selaaminen jälkikäteen — eri asia
+      kuin Epic 12 yllä, joka koskee vain kesken olevan istunnon säilymistä) — tietoisesti jätetty
+      myöhemmäksi päätökseksi jo Epic 1:ssä, ks. [docs/architecture-v2.md](docs/architecture-v2.md) §2.1
+- [ ] Manuaalinen vaalea/tumma-teemakytkin (nyt vain `prefers-color-scheme`-järjestelmäasetus)
+- [ ] Sanaston vienti/tuonti (CSV), esim. varmuuskopiointiin tai siirtoon toiseen työkaluun (esim. Anki)
+
 ## Visuaalinen uudistus: zinc/indigo-teema (2026-07-18, käyttäjän pyynnöstä v2:n jälkeen)
 
 - [x] Väripaletti vaihdettu koko sovelluksessa (molemmat teemat, vaalea+tumma): `neutral-*`→`zinc-*`,

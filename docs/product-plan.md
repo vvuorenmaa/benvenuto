@@ -108,3 +108,55 @@ tyylistä ulkoasua, ei myöskään täysin minimalistista lähestymistapaa.
 * UX/käyttöliittymäsuunnitelma (sivurakenne, layout, näkymät, design-kieli, responsiivisuus):
   [ux-dashboard-design.md](./ux-dashboard-design.md)
 * Konkreettiset tehtävät: [../TODO.md](../TODO.md)
+
+## 8. Laajennus v3 (2026-07-18)
+
+v2-laajennus (sanasto/SRS, kielioppikirjasto, ääni, dashboard) valmistui ja käyttäjä testasi
+sovellusta. Testauksesta nousi kaksi konkreettista puutetta, ja käyttäjä pyysi lisäksi vapaasti
+uusia ominaisuusideoita harkittavaksi.
+
+**1. Kertaus on epäselvä.** Käyttäjän oma sanamuoto testauksen jälkeen: *"mihin siinä vastataan
+ylipäätään, vai onko vaan tarkoitus että jotenkin itselle muistaisi sen"*. Tämä ei ole bugi vaan
+puuttuva selitys: sovellus ei koskaan kerro käyttäjälle että kertaus on **aktiivinen itsetestaus**
+(klassinen SRS-flashcard-malli — yritä muistaa vastaus mielessäsi ENNEN kuin paljastat sen, sitten
+arvioi itse rehellisesti kuinka hyvin muistit). Nykyinen kertaus-näkymä näyttää vain italian sanan →
+"Näytä vastaus" → Vaikea/Hyvä/Helppo, ilman ohjetta väliin kuuluvasta mielessä-muistelusta ja ilman
+palautetta siitä mitä arviointi käytännössä tekee (milloin sana palaa uudelleen). Korjaus:
+selittävä teksti aloitusruutuun + kortin etupuolelle, lyhyt kuvaus mitä kukin arviointinappi
+tarkoittaa käyttäjän oman muistamiskokemuksen kannalta, ja palaute arvioinnin jälkeen ("näet tämän
+sanan uudelleen ~N päivän päästä"). Ks. tarkka tehtävälistaus [../TODO.md](../TODO.md) Epic 10.
+
+**2. Keskustelu katoaa sivua vaihdettaessa.** Käyttäjän huomio: jos Keskustelu-näkymästä siirtyy
+esim. Kielioppi-sivulle (vaikka juuri `GrammarTopicLink`- tai kontekstipaneelin "Avaa aihe" -linkin
+kautta) ja palaa takaisin, käynnissä ollut keskustelu on hävinnyt. Syy: `ChatPanel.tsx`:n `useChat()`-
+tila on paikallinen komponenttitila, joka tuhoutuu kun `app/(app)/page.tsx` unmountautuu
+sivunvaihdossa — viestit TALLENNETAAN kyllä `messages`-tauluun (Epic 1:n `onFinish`-hookissa), mutta
+niitä ei koskaan ladata takaisin UI:hin. Tämä on ERI ongelma kuin alla mainittu "chat-historian
+selaus" -ideakandidaatti (joka koskisi VANHOJEN, päättyneiden keskustelujen selaamista) — tässä on
+kyse siitä että KESKEN OLEVA istunto ei saisi kadota pelkästä sivulla käynnistä. Korjaussuunta:
+nosta `useChat`-tila (yksi per `Mode`, koska tilanvaihto tarkoituksella resetoi keskustelun PRD:n
+mukaisesti) `app/(app)/layout.tsx`-tason Context-provideriin, joka EI unmounttaudu sisarsivujen
+välillä navigoitaessa — vain täysi sivulatauksen uudelleenkäynnistys resetoisi tilan, mikä on
+hyväksyttävää. Ks. tarkka tehtävälistaus [../TODO.md](../TODO.md) Epic 12.
+
+**3. Kielioppikirjasto on hyvin suppea.** Vain 5 aihetta, ja koko "Säännöt"-kategoria on tyhjä — ei
+vastaa A2-B1-tason oppijan todellista kielioppitarvetta. Päätös: laaja laajennus (~18 uutta aihetta),
+täyttäen tyhjän kategorian ja laajentaen aikamuodot/pronominit-kategorioita samalla sisältörakenteella
+kuin nykyiset aiheet (Mikä se on / Muodostus / Poikkeukset / Esimerkkejä). Ks. tarkka aihelista
+[../TODO.md](../TODO.md) Epic 11.
+
+**Harkittavat lisäominaisuudet (ei sitoumusta, kandidaatteja myöhempään priorisointiin):**
+
+* Kevyt tilastonäkymä/kertaushistoria (ei pelillistämistä — puhtaasti informatiivinen, laskettavissa
+  suoraan `review_log`-taulusta ilman skeemamuutoksia)
+* Kielioppikvizit per aihe (pieni monivalintakoe joka testaa kielioppisäännön ymmärrystä, erottuu
+  vocab-flashcardeista)
+* Chat-historian selaus (VANHOJEN, päättyneiden keskustelujen selaaminen jälkikäteen — eri asia kuin
+  yllä oleva Epic 12, joka koskee vain KESKEN olevan istunnon säilymistä sivunvaihdon yli. Viestit
+  tallennetaan jo `messages`-tauluun mutta niitä ei koskaan näytetä uudelleen käyttäjälle — tämä oli
+  tietoisesti jätetty myöhemmäksi päätökseksi jo Epic 1:ssä, ks. [architecture-v2.md](./architecture-v2.md) §2.1)
+* Manuaalinen vaalea/tumma-teemakytkin (nyt vain järjestelmäasetuksen mukaan)
+* Sanaston vienti/tuonti (CSV), esim. varmuuskopiointiin tai siirtoon toiseen työkaluun
+
+Näiden toteutusjärjestys ja laajuus päätetään myöhemmin — tämä on vasta dokumentoitu suunnitelma,
+ei aloitettu toteutus. Ks. [../TODO.md](../TODO.md) "Harkittavat lisäominaisuudet" -osio.
