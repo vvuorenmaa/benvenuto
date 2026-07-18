@@ -10,6 +10,7 @@ import type { Mode } from "@/lib/prompts";
 import { GrammarTopicLink } from "@/components/GrammarTopicLink";
 import { MicButton } from "@/components/MicButton";
 import { AudioPlayButton } from "@/components/AudioPlayButton";
+import { ArrowUp } from "lucide-react";
 
 function extractPlainText(message: UIMessage): string {
   return message.parts
@@ -62,9 +63,9 @@ export function ChatPanel({
 
   return (
     <div className="flex flex-col flex-1 min-h-0">
-      <div className="flex-1 min-h-0 overflow-y-auto px-4 py-6 space-y-4">
+      <div className="flex-1 min-h-0 overflow-y-auto px-6 py-6 space-y-4">
         {messages.length === 0 && (
-          <p className="text-sm text-neutral-400 text-center mt-10">
+          <p className="text-sm text-zinc-400 text-center mt-10">
             Aloita kirjoittamalla viesti alla olevaan kenttään.
           </p>
         )}
@@ -80,10 +81,10 @@ export function ChatPanel({
               }`}
             >
               <div
-                className={`rounded-2xl px-4 py-2 text-sm leading-relaxed whitespace-pre-wrap ${
+                className={`rounded-3xl px-6 py-4 text-sm leading-relaxed whitespace-pre-wrap ${
                   message.role === "user"
-                    ? "bg-blue-600 text-white rounded-br-sm"
-                    : "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 rounded-bl-sm"
+                    ? "bg-indigo-600 text-white"
+                    : "bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100"
                 }`}
               >
                 {message.role === "assistant" && (
@@ -112,7 +113,7 @@ export function ChatPanel({
 
         {status === "submitted" && (
           <div className="flex justify-start">
-            <div className="max-w-[80%] rounded-2xl rounded-bl-sm px-4 py-2 text-sm bg-neutral-100 dark:bg-neutral-800 text-neutral-400">
+            <div className="max-w-[80%] rounded-3xl px-6 py-4 text-sm bg-zinc-100 dark:bg-zinc-900 text-zinc-400">
               …
             </div>
           </div>
@@ -121,35 +122,43 @@ export function ChatPanel({
 
       <form
         onSubmit={handleSubmit}
-        className="flex items-end gap-2 border-t border-neutral-200 dark:border-neutral-800 p-4"
+        className="border-t border-zinc-200 dark:border-zinc-800 px-6 py-4"
       >
-        <MicButton
-          onTranscript={(text) =>
-            setInput((prev) => (prev.trim() ? `${prev.trim()} ${text}` : text))
-          }
-          onRecordingChange={setIsRecording}
-          disabled={isBusy}
-        />
-        <textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              handleSubmit(e);
+        <div className="mx-auto flex max-w-3xl items-end gap-1 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-2 py-2 focus-within:ring-1 focus-within:ring-zinc-300 dark:focus-within:ring-zinc-700">
+          <MicButton
+            onTranscript={(text) =>
+              setInput((prev) => (prev.trim() ? `${prev.trim()} ${text}` : text))
             }
-          }}
-          placeholder={isRecording ? "Kuuntelen..." : "Kirjoita viestisi..."}
-          rows={1}
-          className="flex-1 resize-none rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button
-          type="submit"
-          disabled={isBusy || !input.trim()}
-          className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-40"
-        >
-          Lähetä
-        </button>
+            onRecordingChange={setIsRecording}
+            disabled={isBusy}
+          />
+          <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmit(e);
+              }
+            }}
+            placeholder={isRecording ? "Kuuntelen..." : "Kirjoita viestisi..."}
+            rows={1}
+            className="flex-1 resize-none border-none bg-transparent px-2 py-1.5 text-sm focus:outline-none focus:ring-0"
+          />
+          <button
+            type="submit"
+            disabled={isBusy || !input.trim()}
+            aria-label="Lähetä"
+            title="Lähetä"
+            className={`flex shrink-0 items-center justify-center rounded-full p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:cursor-not-allowed ${
+              input.trim()
+                ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                : "text-zinc-400 dark:text-zinc-600"
+            }`}
+          >
+            <ArrowUp className="h-4 w-4" aria-hidden="true" />
+          </button>
+        </div>
       </form>
     </div>
   );

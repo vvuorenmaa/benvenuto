@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { PartyPopper, CheckCircle2 } from "lucide-react";
 import { StatTile } from "@/components/StatTile";
 
 type VocabStatus = "new" | "due" | "learned";
@@ -103,7 +104,7 @@ export default function KertausPage() {
   return (
     <div className="flex flex-1 flex-col min-h-0 items-center justify-center px-4 py-8">
       {phase === "loading" && (
-        <p role="status" aria-live="polite" className="text-sm text-neutral-400">
+        <p role="status" aria-live="polite" className="text-sm text-zinc-400">
           Ladataan kertausta...
         </p>
       )}
@@ -112,7 +113,7 @@ export default function KertausPage() {
         <p
           role="status"
           aria-live="polite"
-          className="text-sm text-neutral-400 text-center max-w-sm"
+          className="text-sm text-zinc-400 text-center max-w-sm"
         >
           Kertauksen lataus epäonnistui. Yritä päivittää sivu.
         </p>
@@ -124,12 +125,13 @@ export default function KertausPage() {
           aria-live="polite"
           className="flex flex-col items-center gap-4 text-center max-w-sm"
         >
+          <PartyPopper className="h-8 w-8 text-indigo-500" aria-hidden="true" />
           <p className="text-lg font-semibold">
-            Ei kertausta juuri nyt — kaikki ajan tasalla! 🎉
+            Ei kertausta juuri nyt — kaikki ajan tasalla!
           </p>
           <Link
             href="/sanasto"
-            className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             Takaisin sanastoon
           </Link>
@@ -140,13 +142,13 @@ export default function KertausPage() {
         <div className="flex flex-col items-center gap-6 text-center">
           <div>
             <p className="text-lg font-semibold">Tämän päivän kertaus</p>
-            <p className="text-sm text-neutral-500 mt-1">
+            <p className="text-sm text-zinc-500 mt-1">
               <span className="font-mono">{cards.length}</span> sanaa odottaa kertausta
             </p>
           </div>
           <button
             onClick={handleStart}
-            className="rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             Aloita kertaus
           </button>
@@ -156,7 +158,7 @@ export default function KertausPage() {
       {(phase === "front" || phase === "revealed") && currentCard && (
         <div className="flex w-full max-w-md flex-col items-center gap-6">
           <div className="flex w-full flex-col items-center gap-2">
-            <p className="text-sm text-neutral-500">
+            <p className="text-sm text-zinc-500">
               <span className="font-mono">
                 {currentIndex + 1} / {cards.length}
               </span>
@@ -175,8 +177,8 @@ export default function KertausPage() {
                   aria-hidden="true"
                   className={
                     i <= currentIndex
-                      ? "h-1.5 flex-1 rounded-full bg-blue-600"
-                      : "h-1.5 flex-1 rounded-full bg-neutral-200 dark:bg-neutral-800"
+                      ? "h-1.5 flex-1 rounded-full bg-indigo-600"
+                      : "h-1.5 flex-1 rounded-full bg-zinc-200 dark:bg-zinc-800"
                   }
                 />
               ))}
@@ -186,18 +188,18 @@ export default function KertausPage() {
           <div
             role="status"
             aria-live="polite"
-            className="w-full rounded-2xl border border-neutral-200 dark:border-neutral-800 p-8 flex flex-col items-center gap-4 text-center"
+            className="w-full rounded-2xl border border-zinc-200 dark:border-zinc-800 p-8 flex flex-col items-center gap-4 text-center"
           >
             <p className="text-2xl font-semibold">{currentCard.italian}</p>
 
             {phase === "revealed" && (
               <>
-                <div className="w-full border-t border-neutral-200 dark:border-neutral-800" />
-                <p className="text-base text-neutral-700 dark:text-neutral-300">
+                <div className="w-full border-t border-zinc-200 dark:border-zinc-800" />
+                <p className="text-base text-zinc-700 dark:text-zinc-300">
                   {currentCard.finnish}
                 </p>
                 {currentCard.exampleIt && (
-                  <div className="w-full rounded-xl bg-neutral-50 dark:bg-neutral-900 p-3 text-sm text-neutral-600 dark:text-neutral-400 space-y-1">
+                  <div className="w-full rounded-xl bg-zinc-50 dark:bg-zinc-900 p-3 text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
                     <p className="italic">{currentCard.exampleIt}</p>
                     {currentCard.exampleFi && <p>{currentCard.exampleFi}</p>}
                   </div>
@@ -210,7 +212,7 @@ export default function KertausPage() {
             <button
               ref={primaryButtonRef}
               onClick={() => setPhase("revealed")}
-              className="rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               Näytä vastaus
             </button>
@@ -220,20 +222,20 @@ export default function KertausPage() {
             <div className="flex w-full gap-2">
               <button
                 onClick={() => handleGrade("hard")}
-                className="flex-1 rounded-xl bg-neutral-100 dark:bg-neutral-800 px-4 py-2.5 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 rounded-xl bg-zinc-100 dark:bg-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 Vaikea
               </button>
               <button
                 ref={primaryButtonRef}
                 onClick={() => handleGrade("good")}
-                className="flex-1 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 Hyvä
               </button>
               <button
                 onClick={() => handleGrade("easy")}
-                className="flex-1 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 Helppo
               </button>
@@ -248,18 +250,19 @@ export default function KertausPage() {
           aria-live="polite"
           className="flex flex-col items-center gap-4 text-center"
         >
-          <p className="text-lg font-semibold">Kertaus valmis! ✅</p>
+          <CheckCircle2 className="h-8 w-8 text-emerald-500" aria-hidden="true" />
+          <p className="text-lg font-semibold">Kertaus valmis!</p>
           <StatTile value={`${cards.length} / ${cards.length}`} label="käyty läpi" />
           <div className="flex gap-3 mt-2">
             <Link
               href="/sanasto"
-              className="rounded-xl bg-neutral-100 dark:bg-neutral-800 px-4 py-2.5 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="rounded-xl bg-zinc-100 dark:bg-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               Takaisin sanastoon
             </Link>
             <Link
               href="/"
-              className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               Chattiin
             </Link>

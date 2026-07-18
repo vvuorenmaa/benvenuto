@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { Info, X } from "lucide-react";
 import { StatTile } from "@/components/StatTile";
 import { findMatchingGrammarTopic } from "@/lib/grammar/search";
 
@@ -86,7 +87,7 @@ function NewWordsSection({
       {newWords.length > 0 && (
         <ul className="mt-3 space-y-1.5">
           {newWords.slice(0, 5).map((card) => (
-            <li key={card.id} className="text-sm text-neutral-700 dark:text-neutral-300">
+            <li key={card.id} className="text-sm text-zinc-700 dark:text-zinc-300">
               {card.italian}
             </li>
           ))}
@@ -105,10 +106,10 @@ function RelatedGrammarSection({ latestAssistantText }: { latestAssistantText: s
   return (
     <div>
       <p className="text-sm font-semibold mb-2">Liittyvä kielioppi</p>
-      <p className="text-sm text-blue-600 dark:text-blue-400">{`→ ${topic.title}`}</p>
+      <p className="text-sm text-indigo-600 dark:text-indigo-400">{`→ ${topic.title}`}</p>
       <Link
         href={`/kielioppi/${topic.slug}`}
-        className="mt-2 inline-flex items-center text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+        className="mt-2 inline-flex items-center text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded"
       >
         Avaa aihe →
       </Link>
@@ -175,7 +176,7 @@ export function ContextPanel(props: ContextPanelProps) {
   return (
     <>
       {/* Desktop-kontekstipaneeli — vain Keskustelu-näkymässä, vain isoilla näytöillä */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-64 shrink-0 border-l border-neutral-200 dark:border-neutral-800 p-4 space-y-6 overflow-y-auto">
+      <aside className="hidden lg:flex lg:flex-col lg:w-64 shrink-0 border-l border-zinc-200 dark:border-zinc-800 p-4 space-y-6 overflow-y-auto">
         <p className="text-sm font-semibold">Tässä keskustelussa</p>
         <ContextPanelContent {...props} />
       </aside>
@@ -188,15 +189,9 @@ export function ContextPanel(props: ContextPanelProps) {
         aria-label="Avaa keskustelun tiedot"
         aria-haspopup="dialog"
         aria-expanded={isSheetOpen}
-        className="fixed bottom-36 right-4 md:bottom-24 z-20 rounded-full bg-neutral-800 dark:bg-neutral-200 text-white dark:text-neutral-900 p-3 shadow-lg lg:hidden focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="fixed bottom-36 right-4 md:bottom-24 z-20 rounded-full bg-indigo-600 text-white p-3 shadow-lg lg:hidden focus:outline-none focus:ring-2 focus:ring-indigo-500"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5" aria-hidden="true">
-          <path
-            fillRule="evenodd"
-            d="M18 10A8 8 0 1 1 2 10a8 8 0 0 1 16 0ZM9 9a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2H10a1 1 0 0 1-1-1Zm0 3a1 1 0 1 0 0 2h1a1 1 0 1 0 0-2H9Z"
-            clipRule="evenodd"
-          />
-        </svg>
+        <Info className="h-5 w-5" aria-hidden="true" />
       </button>
 
       {/* Bottom sheet -vetolaatikko (sama sisältö kuin desktop-paneelissa) */}
@@ -213,7 +208,7 @@ export function ContextPanel(props: ContextPanelProps) {
             aria-modal="true"
             aria-label="Keskustelun tiedot"
             tabIndex={-1}
-            className="fixed inset-x-0 bottom-0 rounded-t-2xl border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 p-4 max-h-[70vh] overflow-y-auto space-y-6 shadow-lg transition-transform focus:outline-none"
+            className="fixed inset-x-0 bottom-0 rounded-t-2xl border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-4 max-h-[70vh] overflow-y-auto space-y-6 shadow-lg transition-transform focus:outline-none"
           >
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold">Tässä keskustelussa</p>
@@ -221,9 +216,9 @@ export function ContextPanel(props: ContextPanelProps) {
                 type="button"
                 onClick={closeSheet}
                 aria-label="Sulje keskustelun tiedot"
-                className="rounded p-1 text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="rounded p-1 text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
-                ✕
+                <X className="h-4 w-4" aria-hidden="true" />
               </button>
             </div>
             <ContextPanelContent {...props} />

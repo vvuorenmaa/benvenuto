@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Trash2 } from "lucide-react";
 import { MODES, type Mode } from "@/lib/prompts";
 
 type VocabStatus = "new" | "due" | "learned";
@@ -36,7 +37,7 @@ const FILTERS: { id: FilterId; label: string }[] = [
 ];
 
 const STATUS_META: Record<VocabStatus, { label: string; dot: string }> = {
-  new: { label: "Uusi", dot: "bg-blue-500" },
+  new: { label: "Uusi", dot: "bg-indigo-500" },
   due: { label: "Due nyt", dot: "bg-amber-500" },
   learned: { label: "Opittu", dot: "bg-emerald-500" },
 };
@@ -118,10 +119,10 @@ export default function SanastoPage() {
 
   return (
     <div className="flex flex-1 flex-col min-h-0">
-      <header className="border-b border-neutral-200 dark:border-neutral-800 px-4 py-4 space-y-3">
+      <header className="border-b border-zinc-200 dark:border-zinc-800 px-4 py-5 space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold">Sanasto</h1>
-          <span className="text-sm text-neutral-500">{cards.length} sanaa</span>
+          <span className="text-sm text-zinc-500">{cards.length} sanaa</span>
         </div>
 
         <input
@@ -130,7 +131,7 @@ export default function SanastoPage() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Hae sana tai lause..."
           aria-label="Etsi sanastosta"
-          className="w-full rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full rounded-xl border border-zinc-300 dark:border-zinc-700 bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
 
         <nav className="flex flex-wrap gap-2">
@@ -139,10 +140,10 @@ export default function SanastoPage() {
               key={filter.id}
               onClick={() => setActiveFilter(filter.id)}
               aria-pressed={activeFilter === filter.id}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              className={`rounded-full px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
                 activeFilter === filter.id
-                  ? "bg-blue-600 text-white"
-                  : "bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700"
+                  ? "bg-indigo-600 text-white"
+                  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
               }`}
             >
               {filter.label} · {countFor(filter.id)}
@@ -153,7 +154,7 @@ export default function SanastoPage() {
         {dueCount > 0 && (
           <Link
             href="/kertaus"
-            className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             Aloita kertaus ({dueCount} due)
           </Link>
@@ -162,31 +163,31 @@ export default function SanastoPage() {
 
       <div className="flex-1 min-h-0 overflow-y-auto">
         {loading && (
-          <p role="status" aria-live="polite" className="text-sm text-neutral-400 text-center mt-10">
+          <p role="status" aria-live="polite" className="text-sm text-zinc-400 text-center mt-10">
             Ladataan...
           </p>
         )}
 
         {!loading && error && (
-          <p role="status" aria-live="polite" className="text-sm text-neutral-400 text-center mt-10">
+          <p role="status" aria-live="polite" className="text-sm text-zinc-400 text-center mt-10">
             Sanaston lataus epäonnistui. Yritä päivittää sivu.
           </p>
         )}
 
         {!loading && !error && cards.length === 0 && (
-          <p role="status" aria-live="polite" className="text-sm text-neutral-400 text-center mt-10">
+          <p role="status" aria-live="polite" className="text-sm text-zinc-400 text-center mt-10">
             Sanasto täyttyy automaattisesti kun keskustelet — aloita chatista.
           </p>
         )}
 
         {!loading && !error && cards.length > 0 && filteredCards.length === 0 && (
-          <p role="status" aria-live="polite" className="text-sm text-neutral-400 text-center mt-10">
+          <p role="status" aria-live="polite" className="text-sm text-zinc-400 text-center mt-10">
             Ei sanoja tässä suodattimessa.
           </p>
         )}
 
         {!loading && !error && filteredCards.length > 0 && (
-          <ul className="divide-y divide-neutral-200 dark:divide-neutral-800">
+          <ul className="divide-y divide-zinc-200 dark:divide-zinc-800">
             {filteredCards.map((card) => {
               const meta = STATUS_META[card.status];
               const tag = sourceLabel(card.sourceMode);
@@ -195,24 +196,24 @@ export default function SanastoPage() {
               return (
                 <li
                   key={card.id}
-                  className="flex items-start justify-between gap-3 px-4 py-3"
+                  className="flex items-start justify-between gap-3 px-4 py-4"
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-medium text-neutral-900 dark:text-neutral-100">
+                      <span className="font-medium text-zinc-900 dark:text-zinc-100">
                         {card.italian}
                       </span>
-                      <span className="inline-flex items-center gap-1 rounded-full bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 text-xs text-neutral-600 dark:text-neutral-300">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 text-xs text-zinc-600 dark:text-zinc-300">
                         <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
                         {meta.label}
                       </span>
                       {tag && (
-                        <span className="text-xs text-neutral-400 dark:text-neutral-500">
+                        <span className="text-xs text-zinc-400 dark:text-zinc-500">
                           {tag}
                         </span>
                       )}
                     </div>
-                    <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
                       {card.finnish}
                     </p>
                   </div>
@@ -222,20 +223,9 @@ export default function SanastoPage() {
                     disabled={isDeleting}
                     aria-label={`Poista sana ${card.italian}`}
                     title="Poista sana"
-                    className="shrink-0 rounded-full p-1.5 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-200 disabled:opacity-40 transition-colors"
+                    className="shrink-0 rounded-full p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 disabled:opacity-40 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      className="h-4 w-4"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M8.75 1a.75.75 0 0 0-.75.75V2H4a.75.75 0 0 0 0 1.5h.375l.615 11.07A2.25 2.25 0 0 0 7.234 16.6h5.532a2.25 2.25 0 0 0 2.244-2.03L15.625 3.5H16a.75.75 0 0 0 0-1.5h-4v-.25a.75.75 0 0 0-.75-.75h-2.5ZM8.5 6.75a.75.75 0 0 1 1.5 0v6a.75.75 0 0 1-1.5 0v-6Zm3 0a.75.75 0 0 1 1.5 0v6a.75.75 0 0 1-1.5 0v-6Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                    <Trash2 className="h-4 w-4" aria-hidden="true" />
                   </button>
                 </li>
               );

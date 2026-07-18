@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import { Mic } from "lucide-react";
 
 type RecordingState = "idle" | "recording" | "transcribing";
 
@@ -131,24 +132,15 @@ export function MicButton({
         disabled={disabled || isTranscribing}
         aria-label={ariaLabel}
         title={ariaLabel}
-        className={`flex items-center justify-center rounded-full p-2.5 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed ${
+        className={`flex items-center justify-center rounded-full p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:cursor-not-allowed ${
           permissionError
-            ? "bg-red-600 text-white"
+            ? "bg-red-500/10 text-red-500"
             : state === "recording"
-              ? "bg-red-500 text-white animate-pulse motion-reduce:animate-none"
-              : "bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-600"
+              ? "bg-red-500/10 text-red-500 animate-pulse motion-reduce:animate-none"
+              : "text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800"
         } ${isTranscribing ? "opacity-60 animate-pulse motion-reduce:animate-none" : ""}`}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          className="h-4 w-4"
-          aria-hidden="true"
-        >
-          <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Z" />
-          <path d="M19 11a1 1 0 1 0-2 0 5 5 0 0 1-10 0 1 1 0 1 0-2 0 7 7 0 0 0 6 6.93V20H9a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2h-2v-2.07A7 7 0 0 0 19 11Z" />
-        </svg>
+        <Mic className="h-4 w-4" aria-hidden="true" />
       </button>
       <span role="status" aria-live="polite" className="sr-only">
         {statusAnnouncement}

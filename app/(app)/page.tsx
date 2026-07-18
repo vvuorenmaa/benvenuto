@@ -14,24 +14,27 @@ export default function Home() {
   return (
     <div className="flex flex-1 min-h-0">
       <div className="flex flex-1 min-w-0 flex-col min-h-0">
-        <header className="border-b border-neutral-200 dark:border-neutral-800 px-4 py-4">
-          <h1 className="text-lg font-semibold mb-3">Benvenuto</h1>
-          <nav className="flex gap-2 overflow-x-auto">
-            {MODES.map((mode) => (
-              <button
-                key={mode.id}
-                onClick={() => setActiveMode(mode.id)}
-                title={mode.description}
-                className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                  activeMode === mode.id
-                    ? "bg-blue-600 text-white"
-                    : "bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700"
-                }`}
-              >
-                {mode.label}
-              </button>
-            ))}
-          </nav>
+        <header className="border-b border-zinc-200 dark:border-zinc-800 px-6 py-8">
+          <div className="flex justify-center">
+            <nav
+              className="inline-flex max-w-full gap-1 overflow-x-auto rounded-lg bg-zinc-100 dark:bg-zinc-900 p-2"
+            >
+              {MODES.map((mode) => (
+                <button
+                  key={mode.id}
+                  onClick={() => setActiveMode(mode.id)}
+                  title={mode.description}
+                  className={`shrink-0 rounded-md px-6 py-2 text-sm font-medium transition-colors ${
+                    activeMode === mode.id
+                      ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 shadow-sm"
+                      : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200"
+                  }`}
+                >
+                  {mode.label}
+                </button>
+              ))}
+            </nav>
+          </div>
         </header>
 
         <ChatPanel

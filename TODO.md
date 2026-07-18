@@ -237,6 +237,25 @@ rajatuista kohteista (pelillistäminen, lokaali LLM).
 - [ ] Lokaali LLM -reitti Ollaman kautta (esim. Llama 3.1 / Gemma 2), täysin offline-/ilmaiskäyttöä
       varten — alkuperäisen PRD:n Phase 2 -kohta, ei aikataulutettu
 
+## Visuaalinen uudistus: zinc/indigo-teema (2026-07-18, käyttäjän pyynnöstä v2:n jälkeen)
+
+- [x] Väripaletti vaihdettu koko sovelluksessa (molemmat teemat, vaalea+tumma): `neutral-*`→`zinc-*`,
+      accent `blue-*`→`indigo-*`. Juurisyy "pikimustalle" taustalle korjattu: `app/globals.css`:n
+      vanha CSS-muuttuja-pohjainen `#0a0a0a`-tausta poistettu, `app/layout.tsx`:n `body` käyttää nyt
+      suoraan `bg-zinc-50 dark:bg-zinc-950`-Tailwind-luokkia.
+- [x] Kaikki emojit (💬📚🔄📖✅🎉✕) korvattu `lucide-react`-ikoneilla (`MessageSquare`, `BookOpen`,
+      `History`, `GraduationCap`, `CheckCircle2`, `PartyPopper`, `X`, `Mic`, `Volume2`/`Pause`, `Info`,
+      `Trash2`) kaikissa komponenteissa/sivuissa.
+- [x] Chat-tilanvalitsin (`app/(app)/page.tsx`) uudistettu erillisistä pilleistä yhtenäiseksi
+      segmented control -tyyliseksi tab-palkiksi. Syöttöpalkki (`ChatPanel.tsx`) uudistettu yhdeksi
+      pyöristetyksi kontaineriksi (`focus-within:ring-1`), mic+lähetä ikoninappeina sen sisällä.
+      `StatTile.tsx` päivitetty `backdrop-blur`-korteiksi ison numeron kera.
+      Sivupalkissa säilyi kaikki neljä nav-kohtaa (käyttäjän vahvistuksella, ei karsittu kolmeen).
+- [x] Testattu: täysi `npm run build`, kaikki sivut+molemmat teemat+mobiili Playwrightilla
+      (ei konsolivirheitä), a11y-regressiotarkistus (ei uusia regressioita — kontrastitasot
+      identtiset aiempaan `neutral`-versioon nähden, vain nimi vaihtui `zinc`:ksi; fokusrenkaan
+      ohuus `ChatPanel`:in syöttöpalkissa on käyttäjän oma eksplisiittinen pyyntö, ei bugi)
+
 ## Päätökset ja poikkeamat alkuperäisestä PRD:stä
 
 - Client lähettää API:lle `mode`-tunnisteen (ei valmista `systemPrompt`-merkkijonoa).
