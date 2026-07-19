@@ -332,6 +332,47 @@ kirjoitus tarpeen mukaan, a11y-guardian-tarkistus lopuksi, testaus ja commit jok
       (chromium, headless) läpäisty päästä päähän: viesti + assistentin vastaus säilyvät
       `/` → `/kielioppi` → `/`-navigoinnissa, ja mode-painikkeen klikkaus tyhjentää molemmat tilat.
 
+### Epic 13 — Kertaus: aktiivinen tuottaminen + automaattinen tarkistus ✅ (2026-07-19)
+
+Käyttäjän parannusehdotus: nykyinen kertaus on puhtaasti itsearviointia (käyttäjä muistaa mielessään,
+arvioi itse rehellisyyttä). Uusi malli: vastaus PITÄÄ kirjoittaa tai sanoa, ja järjestelmä TARKISTAA
+sen automaattisesti. Päätökset (käyttäjän valinnat AskUserQuestion-kierroksesta):
+
+- **Vastaustapa**: sekä kirjoitus (tekstikenttä) että puhe (olemassa oleva `MicButton`/STT-infra
+  valinnaisena) — käyttäjä valitsee kumman haluaa per kortti.
+- **Tarkistustapa**: kevyt `generateObject`-LLM-tarkistus (sama malli/kaava kuin `extractVocab.ts`:ssä)
+  — hyväksyy synonyymit/eri sanamuodot, EI tarkkaa merkkijonovertailua (liian tiukka suomennoksille
+  joilla on monta oikeaa muotoilua, esim. "olen syönyt" vs. "söin").
+- **Suhde arviointiin**: automaattinen tarkistus MÄÄRÄÄ gradeuksen suoraan (oikein→"good",
+  väärin→"hard") — korvaa nykyisen Vaikea/Hyvä/Helppo-itsearvioinnin kokonaan tässä kortin kohdassa.
+- **Suunta**: EI muutosta — kortin etupuoli näyttää edelleen italian sanan, vastataan suomeksi.
+
+Tehtävät:
+
+- [x] `lib/checking/checkAnswer.ts`: `generateObject` + Zod-skeema (`{ correct: boolean, feedback:
+      string }`), prompti joka vertaa käyttäjän vastausta tallennettuun `finnish`-kenttään merkityksen
+      perusteella, `resolveModel()`. Tyhjä vastaus tunnistetaan ja ohitetaan ilman LLM-kutsua.
+      Testattu oikealla API-kutsulla: hyväksyy synonyymit/lyhennetyt muodot ("huomenta" ~
+      "Hyvää huomenta"), hylkää väärän taivutusmuodon (esim. "syön" kun kysyttiin perusmuotoa
+      "syödä") — tarkistus ei ole liian löysä.
+- [x] `app/api/vocab/check-answer/route.ts`: POST `{ cardId, answer }` → `{ correct, correctAnswer,
+      feedback }`. Ei koske SRS-tilaan — `/api/vocab/review` hoitaa sen erikseen. Virhepolut (404
+      tuntemattomalle cardId:lle, 400 virheelliselle bodylle) testattu.
+- [x] `app/(app)/kertaus/page.tsx`: tilakone `loading|start|answering|checking|revealed|done`.
+      Tekstikenttä + `MicButton` + "Tarkista"-nappi + "En tiedä / Näytä vastaus" -pakoluukku
+      `answering`-vaiheessa. `revealed`-vaihe näyttää Check/X-ikonin + "Oikein!"/"Väärin", käyttäjän
+      oman vastauksen, oikean suomennoksen aina, LLM-palautteen, ja "Seuraava kortti" -napin joka
+      kutsuu `/api/vocab/review`:ia automaattisesti määrätyllä gradeuksella (oikein→"good",
+      väärin→"hard"). Epic 10:n lisäykset (selittävä teksti, "Miten tämä toimii?", intervalDays-toast)
+      säilytetty ja tekstit päivitetty uutta mallia vastaaviksi.
+- [x] Testattu päästä päähän Playwrightilla (aloitus→vastaus→tarkistus→paljastus→seuraava kortti→
+      "en tiedä" -pakoluukku), ei konsolivirheitä. `npm run build` vihreä.
+- [x] a11y-guardian-tarkistus tehty ja korjattu: `aria-live="polite"`-alue oli liian laaja (koko
+      kortti, mukaan lukien muuttumaton italian sana) — rajattu koskemaan vain dynaamista
+      tulossisältöä (`display: contents` -wrapperilla, ei riko flex-layoutia). Fokussiirto
+      "Seuraava kortti" -nappiin arvioitiin riittäväksi (live-region ilmoittaa tuloksen
+      riippumatta fokuksen sijainnista).
+
 ### Harkittavat lisäominaisuudet (ei sitoumusta, kandidaatteja myöhempään priorisointiin)
 
 - [ ] Kevyt tilastonäkymä/kertaushistoria — EI pelillistämistä (streak/XP on jo tietoisesti
