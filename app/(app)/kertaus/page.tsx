@@ -33,6 +33,12 @@ type CheckResult = {
   feedback: string;
 };
 
+type ReviewStats = {
+  todayCount: number;
+  weekCount: number;
+  successRate: number | null;
+};
+
 function formatIntervalFeedback(intervalDays: number): string {
   if (intervalDays <= 0) {
     return "Näet tämän sanan uudelleen pian";
@@ -53,6 +59,11 @@ export default function KertausPage() {
   const [answerInput, setAnswerInput] = useState("");
   const [checkResult, setCheckResult] = useState<CheckResult | null>(null);
   const [submittedAnswer, setSubmittedAnswer] = useState("");
+  const [stats, setStats] = useState<ReviewStats>({
+    todayCount: 0,
+    weekCount: 0,
+    successRate: null,
+  });
   const primaryButtonRef = useRef<HTMLButtonElement>(null);
   const answerInputRef = useRef<HTMLInputElement>(null);
   const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -90,6 +101,28 @@ export default function KertausPage() {
     }
 
     load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadStats() {
+      try {
+        const res = await fetch("/api/vocab/review-stats");
+        if (!res.ok) throw new Error("Tilastojen lataus epäonnistui");
+        const data: ReviewStats = await res.json();
+        if (!cancelled) {
+          setStats(data);
+        }
+      } catch {
+        // Toissijainen tieto — epäonnistuessa näytetään vain oletusarvot hiljaisesti.
+      }
+    }
+
+    loadStats();
     return () => {
       cancelled = true;
     };
@@ -252,6 +285,15 @@ export default function KertausPage() {
             <p className="text-sm text-zinc-500 mt-1">
               <span className="font-mono">{cards.length}</span> sanaa odottaa kertausta
             </p>
+          </div>
+
+          <div className="grid w-full grid-cols-3 gap-2">
+            <StatTile value={stats.todayCount} label="Tänään" />
+            <StatTile value={stats.weekCount} label="Tällä viikolla" />
+            <StatTile
+              value={stats.successRate !== null ? `${stats.successRate}%` : "–"}
+              label="Onnistuminen"
+            />
           </div>
 
           <p className="text-sm text-zinc-500 max-w-xs">

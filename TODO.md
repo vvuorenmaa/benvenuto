@@ -381,17 +381,21 @@ kierroksen käyttäjän valinnat), mutta EI VIELÄ TOTEUTETTU — kaikki rivit `
 perustelut: [docs/product-plan.md](docs/product-plan.md) §9. Ei riippuvuuksia epiikkojen välillä,
 toteutusjärjestys on vapaa (suositus: 14 → 18 → 15 → 17 → 16, yksinkertaisimmasta monimutkaisimpaan).
 
-### Epic 14 — Kevyt tilastonäkymä (kertaushistoria)
+### Epic 14 — Kevyt tilastonäkymä (kertaushistoria) ✅ (2026-07-19)
 
 Ei skeemamuutoksia — käyttää olemassa olevaa `review_log`-taulua. EI pelillistämistä (streak/XP on
 jo erikseen tietoisesti alempana backlogissa) — puhtaasti informatiivinen.
 
-- [ ] `GET /api/vocab/review-stats`: `todayCount`/`weekCount` (`review_log`-rivien määrä
+- [x] `GET /api/vocab/review-stats`: `todayCount`/`weekCount` (`review_log`-rivien määrä
       tänään/viikossa) + `successRate` (osuus jossa `grade >= 4` — kattaa sekä Epic 13:n automaattiset
-      arvot 3/4 että vanhemman datan mahdollisen 5:n, ks. `lib/db/srs.ts`:n `GRADE_QUALITY`)
-- [ ] `app/(app)/kertaus/page.tsx`: kolme `StatTile`:a (`components/StatTile.tsx`) "start"-vaiheeseen
-      "N sanaa odottaa kertausta" -rivin alle: Tänään / Tällä viikolla / Onnistuminen
-- [ ] Ei uutta sivupalkin nav-kohtaa — pysyy osana kertaus-sivua
+      arvot 3/4 että vanhemman datan mahdollisen 5:n, ks. `lib/db/srs.ts`:n `GRADE_QUALITY`).
+      Testattu oikealla datalla: `{"todayCount":4,"weekCount":20,"successRate":85}`, vahvistettu
+      täsmäävän suoraan tietokannasta laskettuun tulokseen.
+- [x] `app/(app)/kertaus/page.tsx`: kolme `StatTile`:a (`components/StatTile.tsx`) "start"-vaiheeseen
+      "N sanaa odottaa kertausta" -rivin alle: Tänään / Tällä viikolla / Onnistuminen. Haku rinnakkain
+      due-kortti-haun kanssa, epäonnistuessa hiljainen fallback oletusarvoihin (ei kriittinen tieto).
+- [x] Ei uutta sivupalkin nav-kohtaa — pysyy osana kertaus-sivua
+- [x] Testattu selaimessa Playwrightilla (dark-teema), tsc/eslint puhtaita, ei konsolivirheitä
 
 ### Epic 15 — Kielioppikvizit (pieni osajoukko: 8 aihetta)
 
