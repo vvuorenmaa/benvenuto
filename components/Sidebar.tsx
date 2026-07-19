@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MessageSquare, BookOpen, History, GraduationCap } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const NAV_ITEMS = [
   { href: "/", label: "Keskustelu", icon: MessageSquare },
@@ -89,6 +90,10 @@ export function Sidebar() {
             </Link>
           );
         })}
+
+        <div className="mt-auto pt-4 border-t border-zinc-200 dark:border-zinc-800">
+          <ThemeToggle />
+        </div>
       </nav>
 
       {/* Mobiili-alapalkki */}

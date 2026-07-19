@@ -444,19 +444,30 @@ ryhmittely), EI epätarkkaa päivä+tila-heuristiikkaa.
 - [ ] Navigointi: EI viidettä sivupalkin nav-kohtaa — pieni "Historia"-linkki `app/(app)/page.tsx`:n
       headeriin riittää (voidaan siirtää sivupalkkiin myöhemmin jos käyttö osoittautuu tärkeäksi)
 
-### Epic 17 — Manuaalinen teemakytkin (vaalea/tumma/järjestelmä)
+### Epic 17 — Manuaalinen teemakytkin (vaalea/tumma/järjestelmä) ✅ (2026-07-19)
 
 Käyttäjän valinta: kolmitilainen (ei vain kaksitilainen vaalea/tumma). Nykyinen `app/globals.css`
 käyttää Tailwind v4:n oletus-mediakysely-pohjaista tumma-tilaa (tarkistettu — ei `@custom-variant`).
 
-- [ ] Asenna `next-themes` (pieni, laajasti käytetty, ratkaisee SSR/hydraatio- ja
+- [x] Asennettu `next-themes` (pieni, laajasti käytetty, ratkaisee SSR/hydraatio- ja
       "flash of wrong theme" -ongelmat valmiiksi oikein)
-- [ ] `app/globals.css`: `@custom-variant dark (&:where(.dark, .dark *));` jotta `dark:`-luokat
+- [x] `app/globals.css`: `@custom-variant dark (&:where(.dark, .dark *));` jotta `dark:`-luokat
       reagoivat `.dark`-CSS-luokkaan eivätkä enää suoraan `prefers-color-scheme`-mediakyselyyn
-- [ ] `app/layout.tsx`: kääri `{children}` `<ThemeProvider attribute="class" defaultTheme="system"
-      enableSystem>`:llä
-- [ ] `components/ThemeToggle.tsx` (uusi): 3-tilainen kytkin (`lucide-react` Sun/Moon/Monitor),
-      sijoitetaan `components/Sidebar.tsx`:ään ilman että se rikkoo due-badge-logiikkaa
+- [x] `app/layout.tsx`: kääritty `{children}` `<ThemeProvider attribute="class" defaultTheme="system"
+      enableSystem>`:llä + `suppressHydrationWarning` `<html>`:iin
+- [x] `components/ThemeToggle.tsx` (uusi): 3-tilainen `role="radiogroup"`/`role="radio"`-kytkin
+      (`lucide-react` Sun/Moon/Monitor), sijoitettu `components/Sidebar.tsx`:n desktop-sivupalkin
+      alaosaan, due-badge-logiikka koskematon
+- [x] KRIITTINEN regressiotesti tehty ja läpäisty: tumma/vaalea-teema toimii edelleen kaikkialla
+      sovelluksessa `next-themes`-siirtymän jälkeen (verifioitu kahdesti, myös itsenäisesti)
+- [x] Testattu selaimessa (DOM-tason klikkauksin, koska Next.js-devtyökalu-overlay peitti napit
+      samaan tapaan kuin aiemmin `MicButton`:in kanssa — ei todellinen bugi): kaikki kolme tilaa
+      vaihtavat `<html>`-elementin luokan oikein (`light`/`dark`), "järjestelmä"-tila resolvoituu
+      oikein selaimen `prefers-color-scheme`:n mukaan. Ei konsolivirheitä, build vihreä.
+- [x] a11y-guardian: korjattu `role="group"`+`aria-pressed` → `role="radiogroup"`+`role="radio"`+
+      `aria-checked` (semanttisesti oikeampi toisensa poissulkeville vaihtoehdoille). `mounted`-tilan
+      `useEffect`-`setState` on tarkoituksellinen, dokumentoitu poikkeus lint-sääntöön (next-themesin
+      viralinen hydraatiokaava, `suppressHydrationWarning` ei estäisi visuaalista väläystä).
 
 ### Epic 18 — Sanaston vienti (CSV, vain vienti — ei tuontia) ✅ (2026-07-19)
 
