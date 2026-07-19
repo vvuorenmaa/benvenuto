@@ -4,12 +4,21 @@ import { useState } from "react";
 import { ChatPanel } from "@/components/ChatPanel";
 import { ContextPanel } from "@/components/ContextPanel";
 import { MODES, type Mode } from "@/lib/prompts";
+import { clearStoredMessages, loadActiveMode, saveActiveMode } from "@/lib/chat/sessionStorage";
 
 export default function Home() {
-  const [activeMode, setActiveMode] = useState<Mode>("grammar");
+  const [activeMode, setActiveMode] = useState<Mode>(() => loadActiveMode("grammar"));
   const [latestAssistantText, setLatestAssistantText] = useState<string | null>(null);
   const [refetchTrigger, setRefetchTrigger] = useState(0);
   const [sessionStartedAt] = useState(() => Date.now());
+
+  function handleModeSelect(nextMode: Mode) {
+    if (nextMode === activeMode) return;
+    clearStoredMessages(activeMode);
+    clearStoredMessages(nextMode);
+    saveActiveMode(nextMode);
+    setActiveMode(nextMode);
+  }
 
   return (
     <div className="flex flex-1 min-h-0">
@@ -22,7 +31,7 @@ export default function Home() {
               {MODES.map((mode) => (
                 <button
                   key={mode.id}
-                  onClick={() => setActiveMode(mode.id)}
+                  onClick={() => handleModeSelect(mode.id)}
                   title={mode.description}
                   className={`shrink-0 rounded-md px-6 py-2 text-sm font-medium transition-colors ${
                     activeMode === mode.id

@@ -26,12 +26,25 @@ type VocabCard = {
 type Phase = "loading" | "start" | "front" | "revealed" | "done";
 type Grade = "hard" | "good" | "easy";
 
+function formatIntervalFeedback(intervalDays: number): string {
+  if (intervalDays <= 0) {
+    return "Näet tämän sanan uudelleen pian";
+  }
+  if (intervalDays === 1) {
+    return "Näet tämän sanan uudelleen huomenna";
+  }
+  return `Näet tämän sanan uudelleen ~${intervalDays} päivän päästä`;
+}
+
 export default function KertausPage() {
   const [phase, setPhase] = useState<Phase>("loading");
   const [cards, setCards] = useState<VocabCard[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [error, setError] = useState(false);
+  const [isHowOpen, setIsHowOpen] = useState(false);
+  const [lastFeedback, setLastFeedback] = useState<string | null>(null);
   const primaryButtonRef = useRef<HTMLButtonElement>(null);
+  const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     // Kortin vaihtuessa (uusi kortti tai vastauksen paljastus) fokus siirretään
@@ -69,6 +82,16 @@ export default function KertausPage() {
     };
   }, []);
 
+  useEffect(() => {
+    // Siivotaan mahdollinen ajastettu palautteen piilotus, jos komponentti
+    // puretaan kesken sen odottamisen.
+    return () => {
+      if (feedbackTimeoutRef.current) {
+        clearTimeout(feedbackTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const currentCard = cards[currentIndex];
 
   function handleStart() {
@@ -85,8 +108,17 @@ export default function KertausPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cardId: card.id, grade }),
       })
-        .then((res) => {
+        .then(async (res) => {
           if (!res.ok) throw new Error("Arvion tallennus epäonnistui");
+          const updated: VocabCard = await res.json();
+
+          if (feedbackTimeoutRef.current) {
+            clearTimeout(feedbackTimeoutRef.current);
+          }
+          setLastFeedback(formatIntervalFeedback(updated.intervalDays));
+          feedbackTimeoutRef.current = setTimeout(() => {
+            setLastFeedback(null);
+          }, 2500);
         })
         .catch((err) => {
           console.error("Kertausarvion tallennus epäonnistui:", err);
@@ -102,7 +134,17 @@ export default function KertausPage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col min-h-0 items-center justify-center px-4 py-8">
+    <div className="relative flex flex-1 flex-col min-h-0 items-center justify-center px-4 py-8">
+      {lastFeedback && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed top-4 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-zinc-900 dark:bg-zinc-100 px-4 py-2 text-xs font-medium text-white dark:text-zinc-900 shadow-lg transition-opacity"
+        >
+          {lastFeedback}
+        </div>
+      )}
+
       {phase === "loading" && (
         <p role="status" aria-live="polite" className="text-sm text-zinc-400">
           Ladataan kertausta...
@@ -139,19 +181,44 @@ export default function KertausPage() {
       )}
 
       {phase === "start" && !error && cards.length > 0 && (
-        <div className="flex flex-col items-center gap-6 text-center">
+        <div className="flex flex-col items-center gap-6 text-center max-w-sm">
           <div>
             <p className="text-lg font-semibold">Tämän päivän kertaus</p>
             <p className="text-sm text-zinc-500 mt-1">
               <span className="font-mono">{cards.length}</span> sanaa odottaa kertausta
             </p>
           </div>
+
+          <p className="text-sm text-zinc-500 max-w-xs">
+            Kertaus on itsetestausta: yritä muistaa suomennos mielessäsi ennen kuin
+            paljastat vastauksen. Arvioi sitten rehellisesti, kuinka hyvin muistit.
+          </p>
+
           <button
             onClick={handleStart}
             className="rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             Aloita kertaus
           </button>
+
+          <div className="flex flex-col items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setIsHowOpen((open) => !open)}
+              aria-expanded={isHowOpen}
+              aria-controls="kertaus-how-it-works"
+              className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              Miten tämä toimii?
+            </button>
+            {isHowOpen && (
+              <p id="kertaus-how-it-works" className="text-xs text-zinc-500 max-w-xs">
+                Kertausväli kasvaa sitä mukaa mitä paremmin muistat sanan — helposti
+                muistetut sanat palaavat harvemmin, vaikeat useammin. Näin aikasi
+                käytetään juuri niihin sanoihin joita eniten tarvitset harjoitella.
+              </p>
+            )}
+          </div>
         </div>
       )}
 
@@ -184,6 +251,12 @@ export default function KertausPage() {
               ))}
             </div>
           </div>
+
+          {phase === "front" && (
+            <p className="text-xs text-zinc-500">
+              Mieti suomennos ennen kuin paljastat sen
+            </p>
+          )}
 
           <div
             role="status"
@@ -222,22 +295,31 @@ export default function KertausPage() {
             <div className="flex w-full gap-2">
               <button
                 onClick={() => handleGrade("hard")}
-                className="flex-1 rounded-xl bg-zinc-100 dark:bg-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex flex-1 flex-col items-center gap-0.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 Vaikea
+                <span className="text-[10px] font-normal text-zinc-600 dark:text-zinc-400">
+                  En muistanut / arvasin
+                </span>
               </button>
               <button
                 ref={primaryButtonRef}
                 onClick={() => handleGrade("good")}
-                className="flex-1 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex flex-1 flex-col items-center gap-0.5 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 Hyvä
+                <span className="text-[10px] font-normal text-indigo-100">
+                  Muistin miettimällä
+                </span>
               </button>
               <button
                 onClick={() => handleGrade("easy")}
-                className="flex-1 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex flex-1 flex-col items-center gap-0.5 rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-emerald-800 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 Helppo
+                <span className="text-[10px] font-normal text-white">
+                  Muistin heti
+                </span>
               </button>
             </div>
           )}

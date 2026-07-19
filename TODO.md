@@ -286,20 +286,51 @@ kirjoitus tarpeen mukaan, a11y-guardian-tarkistus lopuksi, testaus ja commit jok
 - [x] Täysi `npm run build` vihreä, selaintestattu (etusivu, haku, uusi aihesivu
       `/kielioppi/prepositiot-artikoloidut`) — ei konsolivirheitä, taulukot renderöityvät oikein
 
-### Epic 12 — Keskustelun säilyttäminen sivunvaihdon yli
+### Epic 12 — Keskustelun säilyttäminen sivunvaihdon yli ✅ (2026-07-19)
 
-- [ ] Käyttäjän huomio: keskustelu katoaa jos Keskustelu-näkymästä siirtyy toiselle sivulle (esim.
-      juuri `GrammarTopicLink`/kontekstipaneelin "Avaa aihe" -linkin kautta Kielioppiin) ja palaa
+- [x] Käyttäjän huomio: keskustelu katosi jos Keskustelu-näkymästä siirtyi toiselle sivulle (esim.
+      juuri `GrammarTopicLink`/kontekstipaneelin "Avaa aihe" -linkin kautta Kielioppiin) ja palasi
       takaisin — `ChatPanel.tsx`:n `useChat()`-tila on paikallinen komponenttitila joka tuhoutuu
       `app/(app)/page.tsx`:n unmounttautuessa. Viestit TALLENNETAAN kyllä DB:hen (Epic 1), mutta niitä
-      ei ladata takaisin UI:hin.
-- [ ] Korjaussuunta: nosta `useChat`-tila (yksi per `Mode`, koska tilanvaihto tarkoituksella resetoi
-      keskustelun PRD:n mukaisesti — tämä säilyy ennallaan) `app/(app)/layout.tsx`-tason
-      Context-provideriin, joka EI unmounttaudu sisarsivujen välillä navigoitaessa. Vain täysi
-      sivulatauksen uudelleenkäynnistys resetoisi tilan, mikä on hyväksyttävää.
-- [ ] HUOM: tämä on ERI ominaisuus kuin alempi "chat-historian selaus" -ideakandidaatti (joka koskisi
+      ei ladattu takaisin UI:hin.
+- [x] Toteutettu ratkaisu: **`sessionStorage`-pohjainen persistenssi**, EI Context-provideria
+      `app/(app)/layout.tsx`-tasolle (alkuperäinen ehdotus hylättiin — `app/(app)/page.tsx` unmounttautuu
+      joka tapauksessa sisarsivujen välillä, joten Context ei olisi selviytynyt siitä; sessionStorage
+      selviää, koska se on selaimen persistenssiä eikä React-komponenttitilaa). Uusi
+      `lib/chat/sessionStorage.ts` tarjoaa kolme puhdasta funktiota, avaimena `benvenuto:chat:<mode>`:
+      `loadStoredMessages(mode)`, `saveStoredMessages(mode, messages)`, `clearStoredMessages(mode)`
+      (kaikki `UIMessage[]`-tyypitettyjä, `Mode`-avaimella, ei `any`:a).
+      `components/ChatPanel.tsx` lukee alkutilan mountissa `useState(() => loadStoredMessages(mode))`
+      -lazy-initializerillä (sama kaava kuin `sessionStartedAt`:ssa Epic 9:ssä; `useRef` olisi
+      toiminut yhtä hyvin tälle tarkoitukselle — molemmat ovat kelvollisia tapoja lukea kertaalleen
+      mountissa luettava alkuarvo, `useState`-versio valittu yhdenmukaisuuden vuoksi olemassa olevan
+      koodityylin kanssa) ja antaa sen `useChat({ transport, messages: initialMessages })`:lle (`ai` v7 /
+      `@ai-sdk/react` v4 `ChatInit`-optio, luetaan vain kerran per mount), sekä tallentaa `messages`-
+      taulukon sessionStorageen `useEffect`:llä aina kun se muuttuu. Tämä toimii koska
+      `app/(app)/page.tsx` jo käyttää `<ChatPanel key={activeMode} .../>` — sama `mode`, uusi
+      route-mount, `messages`-optio toimii aitona alkutilana eikä reaktiivisena propina.
+- [x] Havaittu ja korjattu lisäongelma verifioinnin aikana: koska `app/(app)/page.tsx` unmounttautuu
+      KOKONAAN sisarreittien välillä, myös sen oma `activeMode`-React-tila resetoituisi hardkoodattuun
+      oletukseensa (`"grammar"`) ilman erillistä korjausta — paluu `/`:iin olisi näyttänyt Kielioppi-
+      välilehden (tyhjä) eikä Keskustelu-välilehteä jossa tallennettu keskustelu oikeasti sijaitsee.
+      Korjattu lisäämällä `lib/chat/sessionStorage.ts`:iin `loadActiveMode(fallback)`/`saveActiveMode(mode)`
+      (avain `benvenuto:chat:activeMode`, `isMode()`-tyyppivartija validoi `MODES`-listaa vasten). Home
+      lukee alkuarvon `useState<Mode>(() => loadActiveMode("grammar"))`:lla ja `handleModeSelect`
+      kutsuu `saveActiveMode(nextMode)` ennen `setActiveMode`:a. Tämä EI muuta `activeMode`-tilan tai
+      `key`-remount-mekanismin toimintatapaa — ainoastaan sen alkuarvon lähdettä — joten
+      tilanvaihtologiikka (alla) pysyy identtisenä.
+- [x] Tilanvaihto-käyttäytyminen SÄILYY ennallaan (tietoinen PRD-päätös, ei muutettu): mode-painikkeen
+      klikkaus (`app/(app)/page.tsx`:n `handleModeSelect`) kutsuu `clearStoredMessages` sekä nykyiselle
+      ETTÄ kohdetilalle ENNEN `setActiveMode`-kutsua, joten Kielioppi/Keskustelu/Ääntäminen-vaihto
+      nollaa keskustelun edelleen JOKA SUUNTAAN (myös samaan tilaan takaisin vaihdettaessa
+      mode-painikkeilla). AINOASTAAN reitin (`/` → sisarsivu → `/`) välinen sivunavigointi SAMASSA
+      tilassa säilyttää keskustelun, koska se ei koskaan kutsu `clearStoredMessages`.
+- [x] HUOM: tämä on ERI ominaisuus kuin alempi "chat-historian selaus" -ideakandidaatti (joka koskisi
       VANHOJEN, päättyneiden keskustelujen selaamista DB:stä) — tässä on kyse vain KESKEN olevan
       istunnon säilymisestä saman selainsession sisällä.
+- [x] Verifioitu: `npx tsc --noEmit` ja `npx eslint .` puhtaita, Playwright-selaintesti
+      (chromium, headless) läpäisty päästä päähän: viesti + assistentin vastaus säilyvät
+      `/` → `/kielioppi` → `/`-navigoinnissa, ja mode-painikkeen klikkaus tyhjentää molemmat tilat.
 
 ### Harkittavat lisäominaisuudet (ei sitoumusta, kandidaatteja myöhempään priorisointiin)
 

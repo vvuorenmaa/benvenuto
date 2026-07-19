@@ -7,6 +7,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { UIMessage } from "ai";
 import type { Mode } from "@/lib/prompts";
+import { loadStoredMessages, saveStoredMessages } from "@/lib/chat/sessionStorage";
 import { GrammarTopicLink } from "@/components/GrammarTopicLink";
 import { MicButton } from "@/components/MicButton";
 import { AudioPlayButton } from "@/components/AudioPlayButton";
@@ -39,9 +40,18 @@ export function ChatPanel({
     [mode],
   );
 
-  const { messages, sendMessage, status } = useChat({ transport });
+  const [initialMessages] = useState(() => loadStoredMessages(mode));
+
+  const { messages, sendMessage, status } = useChat({
+    transport,
+    messages: initialMessages,
+  });
 
   const isBusy = status === "submitted" || status === "streaming";
+
+  useEffect(() => {
+    saveStoredMessages(mode, messages);
+  }, [mode, messages]);
 
   useEffect(() => {
     if (status !== "ready" || messages.length === 0) return;
