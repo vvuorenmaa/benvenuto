@@ -64,6 +64,26 @@ Jos vastauksessa ei ole mitään ääntämyshaasteita korostettuna (esim. lyhyt 
 };
 
 /**
+ * Karsii ilmiselvästi virheelliset poiminnat ennen tallennusta. Havaittu
+ * tuotannossa (2026-07-19): LLM poimii toisinaan assistentin SUOMENKIELISEN
+ * selityksen fragmentin ("epäsuora pronomini", "yksikössä") "italian"-kenttään
+ * — nämä tunnistaa suomen kielelle ominaisista kirjaimista (ä/ö) tai siitä
+ * että "italian" ja "finnish" ovat identtiset (ei todellista käännöstä
+ * tapahtunut). Tällaiset kortit rikkovat kertauksen, koska korttiin ei
+ * todellisuudessa voi vastata italiaksi.
+ */
+function isValidVocabCandidate(candidate: { italian: string; finnish: string }): boolean {
+  const italian = candidate.italian.trim();
+  const finnish = candidate.finnish.trim();
+
+  if (italian.length === 0 || finnish.length === 0) return false;
+  if (/[äöÄÖ]/.test(italian)) return false;
+  if (italian.toLowerCase() === finnish.toLowerCase()) return false;
+
+  return true;
+}
+
+/**
  * Poimii assistentin vastauksesta sanastoa taustaprosessina ja tallentaa
  * löydökset `vocabCards`-tauluun. Tarkoitettu ajettavaksi Next.js:n
  * `after()`-hookissa vastauksen striimauksen jälkeen — ei saa koskaan
@@ -88,14 +108,16 @@ export async function extractVocab({
       prompt: assistantText,
     });
 
-    if (object.candidates.length === 0) {
+    const validCandidates = object.candidates.filter(isValidVocabCandidate);
+
+    if (validCandidates.length === 0) {
       return;
     }
 
     const now = Date.now();
     const matchedTopic = findMatchingGrammarTopic(assistantText);
 
-    for (const candidate of object.candidates) {
+    for (const candidate of validCandidates) {
       db.insert(vocabCards)
         .values({
           italian: candidate.italian,

@@ -495,6 +495,25 @@ Käyttäjän valinta: vain vienti nyt, tuonti mahdollinen myöhempi lisäys jos 
       identtiset aiempaan `neutral`-versioon nähden, vain nimi vaihtui `zinc`:ksi; fokusrenkaan
       ohuus `ChatPanel`:in syöttöpalkissa on käyttäjän oma eksplisiittinen pyyntö, ei bugi)
 
+## Bugikorjaus: kertaus kysyi suomenkielisiä sanoja (2026-07-19)
+
+Käyttäjän huomio: kertauksessa näytettiin toisinaan kortin etupuolella (pitäisi olla italiaa)
+suomenkielistä tekstiä. Juurisyy: `lib/extraction/extractVocab.ts`:n LLM-poiminta poimi joskus
+assistentin SUOMENKIELISEN selityksen fragmentin (esim. "epäsuora pronomini", "yksikössä", "pääte")
+`italian`-kenttään, tai tuotti kortin jossa `italian` ja `finnish` olivat identtiset (ei todellista
+käännöstä). 32/238 sanakorttia (~13 %) oli tällä tavoin virheellisiä.
+
+- [x] Siivottu olemassa oleva data: poistettu 32 virheellistä `vocab_cards`-riviä (tunnistettu
+      ehdolla `italian` sisältää ä/ö TAI `italian = finnish`) + niihin liittyvät `review_log`-rivit.
+      206 tervettä korttia jäljellä. Vahvistettu ettei suodatin poistanut oikeita lyhyitä
+      italiankielisiä sanoja (io/tu/noi/mi/ti/gli/le/ci/vi/dà/che jne. — kaikki säilyivät).
+- [x] Korjattu juurisyy `lib/extraction/extractVocab.ts`:ään: uusi `isValidVocabCandidate()`-suodatin
+      hylkää ehdokkaat ENNEN tallennusta jos `italian` sisältää suomen ä/ö-kirjaimia tai on
+      identtinen `finnish`-kentän kanssa (case-insensitive). Estää saman virheen toistumisen
+      jatkossa ilman että vaikuttaa oikeisiin poimintoihin.
+- [x] Testattu selaimessa: 8 peräkkäistä kertauskorttia tarkistettu, kaikki aitoa italiaa, ei
+      konsolivirheitä. tsc/eslint puhtaita.
+
 ## Päätökset ja poikkeamat alkuperäisestä PRD:stä
 
 - Client lähettää API:lle `mode`-tunnisteen (ei valmista `systemPrompt`-merkkijonoa).
