@@ -6,6 +6,7 @@ export const messages = sqliteTable("messages", {
   role: text("role").notNull(),                // 'user' | 'assistant'
   content: text("content").notNull(),
   createdAt: integer("created_at").notNull(),  // unix ms
+  sessionId: text("session_id"),               // groups messages into a persisted chat session (Epic 16); null for legacy rows
 });
 
 export const vocabCards = sqliteTable("vocab_cards", {

@@ -423,26 +423,45 @@ Käyttäjän valinta: aloitetaan pienellä osajoukolla, EI kaikkia 23 aihetta he
       (lopputulos: index0=7, index1=9, index2=8, index3=8 kertaa). Verifioitu selaimessa että
       tarkistuslogiikka toimii oikein uusilla indekseillä.
 
-### Epic 16 — Chat-historian selaus
+### Epic 16 — Chat-historian selaus ✅ (2026-07-20)
 
 Suurin/monimutkaisin näistä viidestä — ainoa jossa skeemamigraatio. ERI ominaisuus kuin Epic 12
 (joka säilyttää vain KESKEN olevan istunnon `sessionStorage`:ssa) — tämä koskee PÄÄTTYNEIDEN
 keskustelujen selaamista pysyvästi tietokannasta. Käyttäjän valinta: `sessionId`-sarake (tarkka
 ryhmittely), EI epätarkkaa päivä+tila-heuristiikkaa.
 
-- [ ] `lib/db/schema.ts`: `sessionId: text("session_id")` (nullable) `messages`-tauluun, uusi
-      Drizzle-migraatio (`npx drizzle-kit generate`)
-- [ ] `components/ChatPanel.tsx`: `useState(() => crypto.randomUUID())` kerran per mount, välitetään
-      `DefaultChatTransport`:in bodyyn `mode`:n rinnalla
-- [ ] `app/api/chat/route.ts`: lue `sessionId` bodystä, sisällytä `onFinish`-hookin insertteihin
-- [ ] `GET /api/chat/sessions` (uusi): listaa istunnot ryhmiteltynä `sessionId`:llä (tila, alkuaika,
-      ensimmäisen viestin esikatselu), tuorein ensin
-- [ ] `GET /api/chat/sessions/[sessionId]` (uusi): yhden istunnon täysi transkripti
-- [ ] `app/(app)/keskustelut/page.tsx` (uusi): istuntolista
-- [ ] `app/(app)/keskustelut/[sessionId]/page.tsx` (uusi): täysi transkripti lukutilassa (samat
-      kuplatyylit kuin `ChatPanel.tsx`, ei syöttöpalkkia)
-- [ ] Navigointi: EI viidettä sivupalkin nav-kohtaa — pieni "Historia"-linkki `app/(app)/page.tsx`:n
-      headeriin riittää (voidaan siirtää sivupalkkiin myöhemmin jos käyttö osoittautuu tärkeäksi)
+- [x] `lib/db/schema.ts`: `sessionId: text("session_id")` (nullable) `messages`-tauluun, uusi
+      Drizzle-migraatio `drizzle/0002_naive_karen_page.sql`. Verifioitu oikeaa dataa vasten: 182 riviä
+      säilyi ennallaan migraation jälkeen, vanhoilla riveillä `session_id IS NULL` (odotettu).
+- [x] `components/ChatPanel.tsx`: `useState(() => crypto.randomUUID())` kerran per mount, välitetty
+      `DefaultChatTransport`:in bodyyn `mode`:n rinnalla (`{ mode, sessionId }`). Tiedostettu rajoitus:
+      koska paneeli remounttaa `key={activeMode}`:n takia tilan- ja sivunvaihdossa, yksi käyttäjän
+      näkökulmasta jatkuva keskustelu voi jakautua useaan `sessionId`:hen tietokannassa — hyväksytty,
+      koska pääkäyttötapaus on selata PÄÄTTYNEITÄ keskusteluja, ei reaaliaikaista jatkuvuutta.
+- [x] `app/api/chat/route.ts`: lue `sessionId` bodystä, sisällytetty sekä user- että assistant-rivin
+      insertteihin `onFinish`-hookissa.
+- [x] `GET /api/chat/sessions` (uusi): listaa istunnot ryhmiteltynä `sessionId`:llä (tila, alkuaika,
+      ensimmäisen viestin esikatselu 80 merkkiin katkaistuna), tuorein ensin. Suodattaa pois rivit
+      joilla `session_id IS NULL`.
+- [x] `GET /api/chat/sessions/[sessionId]` (uusi): yhden istunnon täysi transkripti aikajärjestyksessä,
+      `404` jos ei löydy.
+- [x] `app/(app)/keskustelut/page.tsx` (uusi): istuntolista (tila-badge, aikaleima, esikatselu),
+      tyhjä tila jos ei istuntoja.
+- [x] `app/(app)/keskustelut/[sessionId]/page.tsx` (uusi): täysi transkripti lukutilassa (samat
+      kuplatyylit kuin `ChatPanel.tsx`, ei syöttöpalkkia), `notFound()` väärällä sessionId:llä.
+- [x] Navigointi: EI viidettä sivupalkin nav-kohtaa — pieni "Historia"-linkki (lucide-react `Clock`)
+      `app/(app)/page.tsx`:n headeriin, tilanvalitsimen viereen.
+- [x] Testattu API:t curlilla oikeaa dataa vasten (2-3 viestiä samalla `sessionId`:llä → näkyi
+      listassa ja transkriptissa oikein, väärä sessionId → 404) ja koko UI-polku Playwrightilla
+      selaimessa (lista → klikkaus → transkripti → takaisin-linkki → Historia-linkki etusivulta →
+      dark mode kaikki toimi oikein).
+- [x] a11y-guardian löysi kriittisen puutteen: viestin rooli (käyttäjä/opettaja) välittyi vain
+      visuaalisen sijainnin kautta, ei ruudunlukijalle — korjattu `aria-label`illa jokaiseen
+      viestikuplaan. Agentti myös väitti kuvaustekstien (`text-zinc-500 dark:text-zinc-400`) kontrastin
+      epäonnistuvan (3.99:1) — itse laskettuna (relative luminance) todellinen arvo on ~4.63:1 (LÄPÄISEE),
+      ei korjattu. Sen sijaan löysin itse todellisen, vakavamman virheen: aikaleimoissa väriluokat olivat
+      väärinpäin (`text-zinc-400 dark:text-zinc-500` — vaaleassa tilassa vain ~2.45:1), korjattu
+      muotoon `text-zinc-500 dark:text-zinc-400` (~4.63:1 vaalea / ~7.77:1 tumma, molemmat läpäisevät).
 
 ### Epic 17 — Manuaalinen teemakytkin (vaalea/tumma/järjestelmä) ✅ (2026-07-19)
 

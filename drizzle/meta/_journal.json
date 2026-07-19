@@ -15,6 +15,13 @@
       "when": 1784291272414,
       "tag": "0001_talented_eternity",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1784495376936,
+      "tag": "0002_naive_karen_page",
+      "breakpoints": true
     }
   ]
 }

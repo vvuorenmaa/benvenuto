@@ -30,14 +30,15 @@ export function ChatPanel({
   const [input, setInput] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const notifiedMessageId = useRef<string | null>(null);
+  const [sessionId] = useState(() => crypto.randomUUID());
 
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
         api: "/api/chat",
-        body: { mode },
+        body: { mode, sessionId },
       }),
-    [mode],
+    [mode, sessionId],
   );
 
   const [initialMessages] = useState(() => loadStoredMessages(mode));

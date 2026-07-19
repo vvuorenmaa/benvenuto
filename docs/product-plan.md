@@ -156,12 +156,12 @@ puhevastaukselle. Ks. [../TODO.md](../TODO.md) Epic 13.
 Harkittavat lisäominaisuudet siirrettiin ja laajennettiin tarkoiksi suunnitelmiksi §9:ään
 (2026-07-19) käyttäjän pyynnöstä käydä ne läpi ja tehdä toteutussuunnitelmat.
 
-## 9. Lisäominaisuudet: Epic 14–18 (suunniteltu 2026-07-19, ei vielä toteutettu)
+## 9. Lisäominaisuudet: Epic 14–18 (suunniteltu 2026-07-19, toteutettu 2026-07-20)
 
 Käyttäjä pyysi käymään v3:n "Harkittavat lisäominaisuudet" -backlogin läpi ja tekemään tarkat
 toteutussuunnitelmat. Viisi epiikkaa suunniteltiin AskUserQuestion-kierroksella (käyttäjän valinnat
-alla) — EI VIELÄ TOTEUTETTU, tarkka tehtävälistaus [../TODO.md](../TODO.md):ssa samannimisten
-epiikkojen alla.
+alla), ja toteutettiin käyttäjän suosittelemassa järjestyksessä (14 → 18 → 15 → 17 → 16) — kaikki
+valmiit, tarkka toteutus- ja verifiointiloki [../TODO.md](../TODO.md):ssa samannimisten epiikkojen alla.
 
 * **Epic 14 — Kevyt tilastonäkymä**: informatiivinen (ei pelillistetty) katsaus kertaushistoriaan
   (`review_log`-taulusta), sijoitetaan kertaus-sivun aloitusruutuun. Ei skeemamuutoksia.

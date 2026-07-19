@@ -16,7 +16,11 @@ function extractPlainText(message: UIMessage): string {
 }
 
 export async function POST(req: Request) {
-  const { messages, mode }: { messages: UIMessage[]; mode: Mode } = await req.json();
+  const {
+    messages,
+    mode,
+    sessionId,
+  }: { messages: UIMessage[]; mode: Mode; sessionId: string | undefined } = await req.json();
 
   const systemPrompt = SYSTEM_PROMPTS[mode] ?? SYSTEM_PROMPTS.grammar;
 
@@ -30,11 +34,13 @@ export async function POST(req: Request) {
     onFinish: async ({ text }) => {
       const createdAt = Date.now();
 
-      db.insert(messagesTable).values({ mode, role: "user", content: userContent, createdAt }).run();
+      db.insert(messagesTable)
+        .values({ mode, role: "user", content: userContent, createdAt, sessionId: sessionId ?? null })
+        .run();
 
       const assistantResult = db
         .insert(messagesTable)
-        .values({ mode, role: "assistant", content: text, createdAt })
+        .values({ mode, role: "assistant", content: text, createdAt, sessionId: sessionId ?? null })
         .run();
       const assistantId = Number(assistantResult.lastInsertRowid);
 
