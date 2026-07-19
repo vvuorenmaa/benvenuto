@@ -544,6 +544,34 @@ käännöstä). 32/238 sanakorttia (~13 %) oli tällä tavoin virheellisiä.
 - [x] Testattu selaimessa: 8 peräkkäistä kertauskorttia tarkistettu, kaikki aitoa italiaa, ei
       konsolivirheitä. tsc/eslint puhtaita.
 
+## Bugikorjaus: sanaston kaksoiskappaleet ja kertauksen synonyymit (2026-07-20)
+
+Käyttäjän huomio: sanastoon tallentui kaksoiskappaleita samasta sanasta (esim. "passato prossimo"
+17 kertaa, "essere" 7 kertaa), ja kertauksen automaattinen tarkistus (Epic 13) saattoi hylätä
+oikean vastauksen jos opiskelija käytti sanan jotain muuta yleistä merkitystä kuin kortille
+sattumalta tallentunutta (esim. "gli" = sekä "hänelle" että monikon artikkeli, "ci" = sekä
+"meille" että "siellä/sinne").
+
+- [x] `lib/extraction/extractVocab.ts`: uusi `normalizeItalian()` (trim + lowercase) ja
+      duplikaattitarkistus ennen tallennusta — hylkää ehdokkaan jos normalisoitu `italian` on jo
+      tietokannassa TAI on jo nähty samassa poimintaerässä. Estää sekä poikki-istuntoiset että
+      saman vastauksen sisäiset duplikaatit.
+- [x] Siivottu olemassa oleva data (käyttäjän hyväksynnällä, varmuuskopio otettu ensin): 209 → 143
+      `vocab_cards`-riviä. Jokaisesta duplikaattiryhmästä säilytettiin opituin kortti (korkein
+      `repetitions`, tasapelissä vanhin `created_at`), loput + niiden `review_log`-rivit poistettu.
+      Verifioitu: ei orpoja `review_log`-rivejä, 43 korttia joilla `repetitions > 0` säilyi ennallaan.
+- [x] Testattu oikealla chat-viestillä: sanan "avere" (jo sanastossa) sisältävä vastaus tuotti 6 uutta
+      korttia mutta EI toista "avere"-riviä.
+- [x] `lib/checking/checkAnswer.ts`: kehotetta vahvistettu — kortin suomennos esitetään nyt
+      eksplisiittisesti "yhtenä esimerkkimerkityksenä, ei ainoana oikeana", ja mallia ohjeistetaan
+      hyväksymään mikä tahansa italiankielisen sanan/lauseen yleisesti tunnettu sanakirjamerkitys,
+      koska opiskelija näkee kertauksessa vain paljaan sanan ilman kontekstia eikä voi arvata kumpaa
+      merkitystä kortti tarkoittaa.
+- [x] Testattu `/api/vocab/check-answer`:lla oikeilla korteilla: "ci"-kortti (tallennettu "meille")
+      hyväksyi sekä "meille" että vaihtoehtoisen "siellä/sinne"-merkityksen, hylkäsi selvästi väärän
+      vastauksen ("kissa"); "gli"-kortti (tallennettu "hänelle, miehelle") hyväksyi vaihtoehtoisen
+      artikkelimerkityksen. tsc/eslint puhtaita molempien muutosten jälkeen.
+
 ## Päätökset ja poikkeamat alkuperäisestä PRD:stä
 
 - Client lähettää API:lle `mode`-tunnisteen (ei valmista `systemPrompt`-merkkijonoa).

@@ -84,6 +84,14 @@ function isValidVocabCandidate(candidate: { italian: string; finnish: string }):
 }
 
 /**
+ * Normalisoi vertailua varten: pienet kirjaimet + trim, jotta "Ciao" ja "ciao "
+ * tunnistetaan samaksi sanaksi eivätkä tuota erillisiä kortteja.
+ */
+function normalizeItalian(italian: string): string {
+  return italian.trim().toLowerCase();
+}
+
+/**
  * Poimii assistentin vastauksesta sanastoa taustaprosessina ja tallentaa
  * löydökset `vocabCards`-tauluun. Tarkoitettu ajettavaksi Next.js:n
  * `after()`-hookissa vastauksen striimauksen jälkeen — ei saa koskaan
@@ -114,10 +122,25 @@ export async function extractVocab({
       return;
     }
 
+    const existingRows = db.select({ italian: vocabCards.italian }).from(vocabCards).all();
+    const existingItalian = new Set(existingRows.map((row) => normalizeItalian(row.italian)));
+
+    const seenInBatch = new Set<string>();
+    const newCandidates = validCandidates.filter((candidate) => {
+      const key = normalizeItalian(candidate.italian);
+      if (existingItalian.has(key) || seenInBatch.has(key)) return false;
+      seenInBatch.add(key);
+      return true;
+    });
+
+    if (newCandidates.length === 0) {
+      return;
+    }
+
     const now = Date.now();
     const matchedTopic = findMatchingGrammarTopic(assistantText);
 
-    for (const candidate of validCandidates) {
+    for (const candidate of newCandidates) {
       db.insert(vocabCards)
         .values({
           italian: candidate.italian,
