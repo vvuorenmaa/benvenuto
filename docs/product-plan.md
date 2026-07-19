@@ -133,11 +133,13 @@ tila on paikallinen komponenttitila, joka tuhoutuu kun `app/(app)/page.tsx` unmo
 sivunvaihdossa — viestit TALLENNETAAN kyllä `messages`-tauluun (Epic 1:n `onFinish`-hookissa), mutta
 niitä ei koskaan ladata takaisin UI:hin. Tämä on ERI ongelma kuin alla mainittu "chat-historian
 selaus" -ideakandidaatti (joka koskisi VANHOJEN, päättyneiden keskustelujen selaamista) — tässä on
-kyse siitä että KESKEN OLEVA istunto ei saisi kadota pelkästä sivulla käynnistä. Korjaussuunta:
-nosta `useChat`-tila (yksi per `Mode`, koska tilanvaihto tarkoituksella resetoi keskustelun PRD:n
-mukaisesti) `app/(app)/layout.tsx`-tason Context-provideriin, joka EI unmounttaudu sisarsivujen
-välillä navigoitaessa — vain täysi sivulatauksen uudelleenkäynnistys resetoisi tilan, mikä on
-hyväksyttävää. Ks. tarkka tehtävälistaus [../TODO.md](../TODO.md) Epic 12.
+kyse siitä että KESKEN OLEVA istunto ei saisi kadota pelkästä sivulla käynnistä. Toteutettu ratkaisu
+(ks. [../TODO.md](../TODO.md) Epic 12): `sessionStorage`-pohjainen persistenssi (`lib/chat/sessionStorage.ts`)
+— EI `app/(app)/layout.tsx`-tason Context-provideria kuten alun perin suunniteltiin, koska
+`app/(app)/page.tsx` unmounttautuu joka tapauksessa sisarsivujen välillä eikä Context olisi
+selviytynyt siitä; selaimen `sessionStorage` selviää, koska se on selaimen persistenssiä eikä
+React-komponenttitilaa. Tilanvaihto tyhjentää edelleen molempien tilojen tallennuksen (PRD:n
+"tilanvaihto resetoi" -päätös säilyi ennallaan).
 
 **3. Kielioppikirjasto on hyvin suppea.** Vain 5 aihetta, ja koko "Säännöt"-kategoria on tyhjä — ei
 vastaa A2-B1-tason oppijan todellista kielioppitarvetta. Päätös: laaja laajennus (~18 uutta aihetta),
@@ -145,18 +147,34 @@ täyttäen tyhjän kategorian ja laajentaen aikamuodot/pronominit-kategorioita s
 kuin nykyiset aiheet (Mikä se on / Muodostus / Poikkeukset / Esimerkkejä). Ks. tarkka aihelista
 [../TODO.md](../TODO.md) Epic 11.
 
-**Harkittavat lisäominaisuudet (ei sitoumusta, kandidaatteja myöhempään priorisointiin):**
+**4. Kertauksen vastaustapa: itsearviointi → aktiivinen tuottaminen.** Käyttäjän parannusehdotus
+testauksen jälkeen: vastaus pitää kirjoittaa tai sanoa, ja järjestelmä tarkistaa sen automaattisesti
+(korvaa Vaikea/Hyvä/Helppo-itsearvioinnin). Toteutettu `lib/checking/checkAnswer.ts`:llä
+(`generateObject`-LLM-tarkistus, hyväksyy synonyymit/eri sanamuodot) + `MicButton`-integraatio
+puhevastaukselle. Ks. [../TODO.md](../TODO.md) Epic 13.
 
-* Kevyt tilastonäkymä/kertaushistoria (ei pelillistämistä — puhtaasti informatiivinen, laskettavissa
-  suoraan `review_log`-taulusta ilman skeemamuutoksia)
-* Kielioppikvizit per aihe (pieni monivalintakoe joka testaa kielioppisäännön ymmärrystä, erottuu
-  vocab-flashcardeista)
-* Chat-historian selaus (VANHOJEN, päättyneiden keskustelujen selaaminen jälkikäteen — eri asia kuin
-  yllä oleva Epic 12, joka koskee vain KESKEN olevan istunnon säilymistä sivunvaihdon yli. Viestit
-  tallennetaan jo `messages`-tauluun mutta niitä ei koskaan näytetä uudelleen käyttäjälle — tämä oli
-  tietoisesti jätetty myöhemmäksi päätökseksi jo Epic 1:ssä, ks. [architecture-v2.md](./architecture-v2.md) §2.1)
-* Manuaalinen vaalea/tumma-teemakytkin (nyt vain järjestelmäasetuksen mukaan)
-* Sanaston vienti/tuonti (CSV), esim. varmuuskopiointiin tai siirtoon toiseen työkaluun
+Harkittavat lisäominaisuudet siirrettiin ja laajennettiin tarkoiksi suunnitelmiksi §9:ään
+(2026-07-19) käyttäjän pyynnöstä käydä ne läpi ja tehdä toteutussuunnitelmat.
 
-Näiden toteutusjärjestys ja laajuus päätetään myöhemmin — tämä on vasta dokumentoitu suunnitelma,
-ei aloitettu toteutus. Ks. [../TODO.md](../TODO.md) "Harkittavat lisäominaisuudet" -osio.
+## 9. Lisäominaisuudet: Epic 14–18 (suunniteltu 2026-07-19, ei vielä toteutettu)
+
+Käyttäjä pyysi käymään v3:n "Harkittavat lisäominaisuudet" -backlogin läpi ja tekemään tarkat
+toteutussuunnitelmat. Viisi epiikkaa suunniteltiin AskUserQuestion-kierroksella (käyttäjän valinnat
+alla) — EI VIELÄ TOTEUTETTU, tarkka tehtävälistaus [../TODO.md](../TODO.md):ssa samannimisten
+epiikkojen alla.
+
+* **Epic 14 — Kevyt tilastonäkymä**: informatiivinen (ei pelillistetty) katsaus kertaushistoriaan
+  (`review_log`-taulusta), sijoitetaan kertaus-sivun aloitusruutuun. Ei skeemamuutoksia.
+* **Epic 15 — Kielioppikvizit**: käyttäjän valinta — aloitetaan PIENELLÄ osajoukolla (8 aihetta 23:sta),
+  ei kaikkia heti. Monivalintakysymykset testaavat kielioppisäännön ymmärrystä (erottuu sanasto-
+  flashcardeista). Deterministinen client-puolen tarkistus, ei LLM-kutsua.
+* **Epic 16 — Chat-historian selaus**: suurin/monimutkaisin, ainoa jossa skeemamigraatio. Käyttäjän
+  valinta — `sessionId`-sarake `messages`-tauluun (tarkka ryhmittely) ei-tarkan päivä+tila-
+  heuristiikan sijaan. Eri ominaisuus kuin Epic 12 (joka koskee vain kesken olevaa istuntoa).
+* **Epic 17 — Manuaalinen teemakytkin**: käyttäjän valinta — KOLMITILAINEN (vaalea/tumma/järjestelmä),
+  ei vain kaksitilainen. `next-themes`-riippuvuus (ratkaisee SSR/flash-of-wrong-theme-ongelmat).
+* **Epic 18 — Sanaston vienti**: käyttäjän valinta — VAIN vienti (CSV) nyt, ei tuontia. Tuonti
+  mahdollinen erillinen myöhempi epiikka jos tarve oikeasti ilmenee.
+
+Ei riippuvuuksia epiikkojen välillä — toteutusjärjestys vapaa (suositus TODO.md:ssä: yksinkertai-
+simmasta monimutkaisimpaan, 14 → 18 → 15 → 17 → 16).

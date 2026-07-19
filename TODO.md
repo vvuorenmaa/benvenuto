@@ -373,18 +373,89 @@ Tehtävät:
       "Seuraava kortti" -nappiin arvioitiin riittäväksi (live-region ilmoittaa tuloksen
       riippumatta fokuksen sijainnista).
 
-### Harkittavat lisäominaisuudet (ei sitoumusta, kandidaatteja myöhempään priorisointiin)
+## Lisäominaisuudet: suunniteltu, ei toteutettu (Epic 14–18, 2026-07-19)
 
-- [ ] Kevyt tilastonäkymä/kertaushistoria — EI pelillistämistä (streak/XP on jo tietoisesti
-      backlogissa alla), vaan puhtaasti informatiivinen: montako sanaa kerrattu tänään/viikossa,
-      laskettavissa suoraan `review_log`-taulusta ilman skeemamuutoksia
-- [ ] Kielioppikvizit per aihe — pieni monivalintakoe joka testaa KIELIOPPISÄÄNNÖN ymmärrystä,
-      erottuu vocab-flashcardeista jotka testaavat sanastoa
-- [ ] Chat-historian selaus (VANHOJEN, päättyneiden keskustelujen selaaminen jälkikäteen — eri asia
-      kuin Epic 12 yllä, joka koskee vain kesken olevan istunnon säilymistä) — tietoisesti jätetty
-      myöhemmäksi päätökseksi jo Epic 1:ssä, ks. [docs/architecture-v2.md](docs/architecture-v2.md) §2.1
-- [ ] Manuaalinen vaalea/tumma-teemakytkin (nyt vain `prefers-color-scheme`-järjestelmäasetus)
-- [ ] Sanaston vienti/tuonti (CSV), esim. varmuuskopiointiin tai siirtoon toiseen työkaluun (esim. Anki)
+Käyttäjä pyysi käymään "Harkittavat lisäominaisuudet" -backlogin läpi ja tekemään toteutus-
+suunnitelmat. Alla olevat viisi epiikkaa on nyt SUUNNITELTU tarkasti (mukaan lukien AskUserQuestion-
+kierroksen käyttäjän valinnat), mutta EI VIELÄ TOTEUTETTU — kaikki rivit `[ ]`-tilassa. Tausta ja
+perustelut: [docs/product-plan.md](docs/product-plan.md) §9. Ei riippuvuuksia epiikkojen välillä,
+toteutusjärjestys on vapaa (suositus: 14 → 18 → 15 → 17 → 16, yksinkertaisimmasta monimutkaisimpaan).
+
+### Epic 14 — Kevyt tilastonäkymä (kertaushistoria)
+
+Ei skeemamuutoksia — käyttää olemassa olevaa `review_log`-taulua. EI pelillistämistä (streak/XP on
+jo erikseen tietoisesti alempana backlogissa) — puhtaasti informatiivinen.
+
+- [ ] `GET /api/vocab/review-stats`: `todayCount`/`weekCount` (`review_log`-rivien määrä
+      tänään/viikossa) + `successRate` (osuus jossa `grade >= 4` — kattaa sekä Epic 13:n automaattiset
+      arvot 3/4 että vanhemman datan mahdollisen 5:n, ks. `lib/db/srs.ts`:n `GRADE_QUALITY`)
+- [ ] `app/(app)/kertaus/page.tsx`: kolme `StatTile`:a (`components/StatTile.tsx`) "start"-vaiheeseen
+      "N sanaa odottaa kertausta" -rivin alle: Tänään / Tällä viikolla / Onnistuminen
+- [ ] Ei uutta sivupalkin nav-kohtaa — pysyy osana kertaus-sivua
+
+### Epic 15 — Kielioppikvizit (pieni osajoukko: 8 aihetta)
+
+Käyttäjän valinta: aloitetaan pienellä osajoukolla, EI kaikkia 23 aihetta heti.
+
+- [ ] `lib/grammar/topics.ts`: `GrammarTopic`-tyyppiin valinnainen `quiz?: QuizQuestion[]`
+      (`{ question, options, correctIndex, explanation }`). 3–5 kysymystä kahdeksalle aiheelle:
+      `passato-prossimo`, `imperfetto`, `pronomi-diretti`, `pronomi-indiretti`, `ci-ne`, `artikkelit`,
+      `negaatio`, `c-g-aanteet` (kattaa kaikki 4 kategoriaa + tunnetuimmat sekaannuskohdat)
+- [ ] `components/GrammarQuiz.tsx` (uusi): yksi kysymys kerrallaan, klikkaus → heti oikein/väärin
+      (`lucide-react` Check/X) + `explanation`, "Seuraava kysymys", lopussa `StatTile`-pistemäärä.
+      EI API-reittiä — tarkistus on deterministinen client-vertailu, ei LLM-kutsua tarvita
+- [ ] `app/(app)/kielioppi/[aihe]/page.tsx`: renderöi kvizin "Liittyvät sanat"-osion alle VAIN jos
+      `topic.quiz` on määritelty (muille 15 aiheelle ei tyhjää kviziosiota)
+
+### Epic 16 — Chat-historian selaus
+
+Suurin/monimutkaisin näistä viidestä — ainoa jossa skeemamigraatio. ERI ominaisuus kuin Epic 12
+(joka säilyttää vain KESKEN olevan istunnon `sessionStorage`:ssa) — tämä koskee PÄÄTTYNEIDEN
+keskustelujen selaamista pysyvästi tietokannasta. Käyttäjän valinta: `sessionId`-sarake (tarkka
+ryhmittely), EI epätarkkaa päivä+tila-heuristiikkaa.
+
+- [ ] `lib/db/schema.ts`: `sessionId: text("session_id")` (nullable) `messages`-tauluun, uusi
+      Drizzle-migraatio (`npx drizzle-kit generate`)
+- [ ] `components/ChatPanel.tsx`: `useState(() => crypto.randomUUID())` kerran per mount, välitetään
+      `DefaultChatTransport`:in bodyyn `mode`:n rinnalla
+- [ ] `app/api/chat/route.ts`: lue `sessionId` bodystä, sisällytä `onFinish`-hookin insertteihin
+- [ ] `GET /api/chat/sessions` (uusi): listaa istunnot ryhmiteltynä `sessionId`:llä (tila, alkuaika,
+      ensimmäisen viestin esikatselu), tuorein ensin
+- [ ] `GET /api/chat/sessions/[sessionId]` (uusi): yhden istunnon täysi transkripti
+- [ ] `app/(app)/keskustelut/page.tsx` (uusi): istuntolista
+- [ ] `app/(app)/keskustelut/[sessionId]/page.tsx` (uusi): täysi transkripti lukutilassa (samat
+      kuplatyylit kuin `ChatPanel.tsx`, ei syöttöpalkkia)
+- [ ] Navigointi: EI viidettä sivupalkin nav-kohtaa — pieni "Historia"-linkki `app/(app)/page.tsx`:n
+      headeriin riittää (voidaan siirtää sivupalkkiin myöhemmin jos käyttö osoittautuu tärkeäksi)
+
+### Epic 17 — Manuaalinen teemakytkin (vaalea/tumma/järjestelmä)
+
+Käyttäjän valinta: kolmitilainen (ei vain kaksitilainen vaalea/tumma). Nykyinen `app/globals.css`
+käyttää Tailwind v4:n oletus-mediakysely-pohjaista tumma-tilaa (tarkistettu — ei `@custom-variant`).
+
+- [ ] Asenna `next-themes` (pieni, laajasti käytetty, ratkaisee SSR/hydraatio- ja
+      "flash of wrong theme" -ongelmat valmiiksi oikein)
+- [ ] `app/globals.css`: `@custom-variant dark (&:where(.dark, .dark *));` jotta `dark:`-luokat
+      reagoivat `.dark`-CSS-luokkaan eivätkä enää suoraan `prefers-color-scheme`-mediakyselyyn
+- [ ] `app/layout.tsx`: kääri `{children}` `<ThemeProvider attribute="class" defaultTheme="system"
+      enableSystem>`:llä
+- [ ] `components/ThemeToggle.tsx` (uusi): 3-tilainen kytkin (`lucide-react` Sun/Moon/Monitor),
+      sijoitetaan `components/Sidebar.tsx`:ään ilman että se rikkoo due-badge-logiikkaa
+
+### Epic 18 — Sanaston vienti (CSV, vain vienti — ei tuontia)
+
+Käyttäjän valinta: vain vienti nyt, tuonti mahdollinen myöhempi lisäys jos tarve ilmenee.
+
+- [ ] `GET /api/vocab/export` (uusi): CSV kaikista `vocabCards`-riveistä (italian, finnish,
+      exampleIt, exampleFi, context, sourceMode, createdAt, status), käsinkirjoitettu CSV-escape
+      (ei tarvita kirjastoa pelkkään vientiin), `Content-Disposition: attachment`
+- [ ] `app/(app)/sanasto/page.tsx`: "Vie CSV" -linkki/nappi (`lucide-react` Download-ikoni),
+      pelkkä `<a href="/api/vocab/export" download>` riittää
+
+## Vanha "Harkittavat lisäominaisuudet" -backlog (2026-07-18) — korvattu yllä olevilla epiikoilla
+
+- [ ] Sanaston tuonti (CSV) — TIETOISESTI rajattu pois Epic 18:sta (vain vienti nyt), mahdollinen
+      erillinen myöhempi epiikka jos tarve oikeasti ilmenee (esim. laitteen vaihto)
 
 ## Visuaalinen uudistus: zinc/indigo-teema (2026-07-18, käyttäjän pyynnöstä v2:n jälkeen)
 
