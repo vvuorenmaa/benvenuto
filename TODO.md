@@ -446,15 +446,18 @@ käyttää Tailwind v4:n oletus-mediakysely-pohjaista tumma-tilaa (tarkistettu �
 - [ ] `components/ThemeToggle.tsx` (uusi): 3-tilainen kytkin (`lucide-react` Sun/Moon/Monitor),
       sijoitetaan `components/Sidebar.tsx`:ään ilman että se rikkoo due-badge-logiikkaa
 
-### Epic 18 — Sanaston vienti (CSV, vain vienti — ei tuontia)
+### Epic 18 — Sanaston vienti (CSV, vain vienti — ei tuontia) ✅ (2026-07-19)
 
 Käyttäjän valinta: vain vienti nyt, tuonti mahdollinen myöhempi lisäys jos tarve ilmenee.
 
-- [ ] `GET /api/vocab/export` (uusi): CSV kaikista `vocabCards`-riveistä (italian, finnish,
+- [x] `GET /api/vocab/export` (uusi): CSV kaikista `vocabCards`-riveistä (italian, finnish,
       exampleIt, exampleFi, context, sourceMode, createdAt, status), käsinkirjoitettu CSV-escape
-      (ei tarvita kirjastoa pelkkään vientiin), `Content-Disposition: attachment`
-- [ ] `app/(app)/sanasto/page.tsx`: "Vie CSV" -linkki/nappi (`lucide-react` Download-ikoni),
-      pelkkä `<a href="/api/vocab/export" download>` riittää
+      (ei tarvita kirjastoa pelkkään vientiin), `Content-Disposition: attachment`. Testattu oikealla
+      datalla (240 riviä), CSV-escape vahvistettu toimivaksi kentille joissa lainausmerkkejä/pilkkuja.
+- [x] `app/(app)/sanasto/page.tsx`: "Vie CSV" -linkki (`lucide-react` Download-ikoni) otsikkorivillä
+      "{cards.length} sanaa" -tekstin vieressä, pelkkä `<a href="/api/vocab/export" download>`
+- [x] Testattu selaimessa Playwrightilla (dark-teema) — linkki näkyy oikeassa paikassa, ei
+      konsolivirheitä. tsc/eslint puhtaita.
 
 ## Vanha "Harkittavat lisäominaisuudet" -backlog (2026-07-18) — korvattu yllä olevilla epiikoilla
 

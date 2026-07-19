@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Trash2 } from "lucide-react";
+import { Download, Trash2 } from "lucide-react";
 import { MODES, type Mode } from "@/lib/prompts";
 
 type VocabStatus = "new" | "due" | "learned";
@@ -122,7 +122,17 @@ export default function SanastoPage() {
       <header className="border-b border-zinc-200 dark:border-zinc-800 px-4 py-5 space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold">Sanasto</h1>
-          <span className="text-sm text-zinc-500">{cards.length} sanaa</span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-zinc-500">{cards.length} sanaa</span>
+            <a
+              href="/api/vocab/export"
+              download
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <Download className="h-3.5 w-3.5" aria-hidden="true" />
+              Vie CSV
+            </a>
+          </div>
         </div>
 
         <input
