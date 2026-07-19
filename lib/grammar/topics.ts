@@ -43,8 +43,8 @@ Monilla yleisillä verbeillä on epäsäännöllinen partisiippi, esim. fatto (f
     quiz: [
       {
         question: "Mikä on oikea passato prossimo -muoto verbistä \"mangiare\" (minä-persoona)?",
-        options: ["Ho mangiato", "Sono mangiato", "Mangiavo", "Mangio"],
-        correctIndex: 0,
+        options: ["Sono mangiato", "Mangiavo", "Ho mangiato", "Mangio"],
+        correctIndex: 2,
         explanation: "\"Mangiare\" käyttää apuverbiä avere, ei essere — useimmat verbit käyttävät avere-apuverbiä.",
       },
       {
@@ -56,18 +56,18 @@ Monilla yleisillä verbeillä on epäsäännöllinen partisiippi, esim. fatto (f
       {
         question: "\"Lei è andata al mare.\" Miksi partisiippi on \"andata\" eikä \"andato\"?",
         options: [
-          "Koska essere-apuverbin kanssa partisiippi taipuu tekijän suvun mukaan",
           "Koska se on aina näin naispuolisille verbeille",
           "Se on kirjoitusvirhe, pitäisi olla andato",
           "Koska mare on feminiininen sana",
+          "Koska essere-apuverbin kanssa partisiippi taipuu tekijän suvun mukaan",
         ],
-        correctIndex: 0,
+        correctIndex: 3,
         explanation: "Essere-apuverbin kanssa partisiippi taipuu subjektin suvun/luvun mukaan (andato/andata/andati/andate).",
       },
       {
         question: "Mikä on verbin \"fare\" (tehdä) epäsäännöllinen partisiippi?",
-        options: ["fatto", "faito", "facevo", "farò"],
-        correctIndex: 0,
+        options: ["faito", "fatto", "facevo", "farò"],
+        correctIndex: 1,
         explanation: "fare → fatto on epäsäännöllinen, kuten monet yleiset verbit.",
       },
     ],
@@ -106,19 +106,19 @@ Epäsuora pronomini korvaa "a + henkilö" -rakenteen: "Scrivo a Maria" → "Le s
     quiz: [
       {
         question: "\"Scrivo a Maria.\" Korvaa \"a Maria\" epäsuoralla pronominilla:",
-        options: ["Le scrivo", "La scrivo", "Lo scrivo", "Ci scrivo"],
-        correctIndex: 0,
+        options: ["La scrivo", "Le scrivo", "Lo scrivo", "Ci scrivo"],
+        correctIndex: 1,
         explanation: "Maria on nainen → \"le\" (hänelle, epäsuora), ei \"la\" (suora objekti).",
       },
       {
         question: "\"Mi piace il caffè.\" Mikä on kirjaimellinen tulkinta rakenteesta?",
         options: [
-          "Kahvi miellyttää minua (piacere kääntyy toisin päin kuin suomessa)",
           "Pidän kahvista aivan kuin suomessakin suoraan",
           "Mi on omistuspronomini",
           "Il caffè on epäsuora objekti",
+          "Kahvi miellyttää minua (piacere kääntyy toisin päin kuin suomessa)",
         ],
-        correctIndex: 0,
+        correctIndex: 3,
         explanation: "Piacere-rakenteessa asia on subjekti ja henkilö epäsuora objekti — käänteinen suomeen nähden.",
       },
       {
@@ -129,8 +129,8 @@ Epäsuora pronomini korvaa "a + henkilö" -rakenteen: "Scrivo a Maria" → "Le s
       },
       {
         question: "\"Gli ho detto la verità.\" Kenelle puhuja kertoi totuuden?",
-        options: ["Hänelle (mies)", "Hänelle (nainen)", "Heille", "Minulle"],
-        correctIndex: 0,
+        options: ["Hänelle (nainen)", "Heille", "Hänelle (mies)", "Minulle"],
+        correctIndex: 2,
         explanation: "\"gli\" = hänelle (mies) epäsuorassa muodossa.",
       },
     ],
@@ -285,8 +285,8 @@ Nyrkkisääntö: jos kyse on toistuvasta tavasta, kuvailusta tai taustalla käyn
     quiz: [
       {
         question: "Kumpi lause käyttää OIKEIN imperfettoa kuvaamaan toistuvaa lapsuuden tapaa?",
-        options: ["Da bambino giocavo sempre fuori", "Da bambino ho giocato sempre fuori", "Da bambino gioco sempre fuori", "Da bambino giocherò sempre fuori"],
-        correctIndex: 0,
+        options: ["Da bambino ho giocato sempre fuori", "Da bambino gioco sempre fuori", "Da bambino giocherò sempre fuori", "Da bambino giocavo sempre fuori"],
+        correctIndex: 3,
         explanation: "Toistuva tapa menneisyydessä ilmaistaan imperfektillä (giocavo), ei passato prossimolla.",
       },
       {
@@ -298,18 +298,18 @@ Nyrkkisääntö: jos kyse on toistuvasta tavasta, kuvailusta tai taustalla käyn
       {
         question: "\"Mentre studiavo, squillava il telefono.\" Miksi molemmat verbit ovat imperfektissä?",
         options: [
-          "Molemmat kuvaavat samanaikaisia, käynnissä olleita taustatapahtumia",
           "Koska lause on kysymys",
           "Koska molemmat verbit ovat essere-verbejä",
+          "Molemmat kuvaavat samanaikaisia, käynnissä olleita taustatapahtumia",
           "Se on virhe, toisen pitäisi olla passato prossimossa",
         ],
-        correctIndex: 0,
+        correctIndex: 2,
         explanation: "Kaksi rinnakkaista, käynnissä ollutta tapahtumaa kuvataan usein molemmat imperfektillä.",
       },
       {
         question: "Mikä pääte kuuluu -are-verbin imperfettoon minä-muodossa?",
-        options: ["-avo", "-evo", "-ivo", "-ato"],
-        correctIndex: 0,
+        options: ["-evo", "-avo", "-ivo", "-ato"],
+        correctIndex: 1,
         explanation: "-are-verbien imperfetto: -avo, -avi, -ava, -avamo, -avate, -avano.",
       },
     ],
@@ -460,8 +460,8 @@ Passato prossimossa partisiippi TAIPUU lo/la/li/le-pronominin suvun ja luvun muk
     quiz: [
       {
         question: "\"Vedo Marco.\" Korvaa \"Marco\" suoralla objektipronominilla:",
-        options: ["Lo vedo", "Gli vedo", "Le vedo", "Ci vedo"],
-        correctIndex: 0,
+        options: ["Gli vedo", "Le vedo", "Ci vedo", "Lo vedo"],
+        correctIndex: 3,
         explanation: "Marco on maskuliini yksikkö → \"lo\".",
       },
       {
@@ -484,12 +484,12 @@ Passato prossimossa partisiippi TAIPUU lo/la/li/le-pronominin suvun ja luvun muk
       {
         question: "\"Voglio vederlo.\" Miksi \"lo\" on liitetty verbin perään?",
         options: [
-          "Koska infinitiivin (vedere) kanssa pronomini liitetään sen loppuun",
           "Koska se on erisnimi",
           "Se on virhe",
+          "Koska infinitiivin (vedere) kanssa pronomini liitetään sen loppuun",
           "Koska lo tarkoittaa jotain muuta liitettynä",
         ],
-        correctIndex: 0,
+        correctIndex: 2,
         explanation: "Infinitiivin kanssa suora/epäsuora objektipronomini liitetään yleensä sen loppuun yhdeksi sanaksi.",
       },
     ],
@@ -555,20 +555,20 @@ Näitä pidetään tyypillisesti hankalina juuri siksi, ettei suomessa ole vasta
       },
       {
         question: "\"Quanti libri hai?\" \"Ne ho tre.\" Mitä \"ne\" korvaa?",
-        options: ["\"di libri\" (määrää koskeva ilmaus)", "\"tre\" (numeron)", "\"quanti\" (kysymyssanan)", "Ei mitään"],
-        correctIndex: 0,
+        options: ["\"tre\" (numeron)", "\"quanti\" (kysymyssanan)", "\"di libri\" (määrää koskeva ilmaus)", "Ei mitään"],
+        correctIndex: 2,
         explanation: "\"ne\" korvaa \"di + asia/määrä\" -rakenteen.",
       },
       {
         question: "Kumpi lause on oikein muodostettu?",
-        options: ["Ne voglio due", "Ci voglio due", "Lo voglio due", "Ne voglio a due"],
-        correctIndex: 0,
+        options: ["Ci voglio due", "Lo voglio due", "Ne voglio a due", "Ne voglio due"],
+        correctIndex: 3,
         explanation: "\"Ne voglio due\" = \"Haluan niitä kaksi\" — ne korvaa määrän kohteen.",
       },
       {
         question: "\"Pensi spesso al futuro?\" \"Sì, ci penso spesso.\" Mitä \"ci\" tässä korvaa?",
-        options: ["\"al futuro\" (asia josta ajatellaan)", "\"spesso\" (adverbin)", "\"pensi\"-verbin", "Ei mitään erityistä"],
-        correctIndex: 0,
+        options: ["\"spesso\" (adverbin)", "\"al futuro\" (asia josta ajatellaan)", "\"pensi\"-verbin", "Ei mitään erityistä"],
+        correctIndex: 1,
         explanation: "\"ci\" voi korvata myös \"a + asia\" tiettyjen verbien kanssa kuten \"pensare a\".",
       },
     ],
@@ -624,20 +624,20 @@ Valinta il/lo (ja i/gli, un/uno) välillä ei riipu vain suvusta, vaan myös seu
     quiz: [
       {
         question: "Mikä artikkeli sopii sanalle \"studente\" (opiskelija, alkaa s+konsonantilla)?",
-        options: ["lo studente", "il studente", "la studente", "un studente"],
-        correctIndex: 0,
+        options: ["il studente", "la studente", "lo studente", "un studente"],
+        correctIndex: 2,
         explanation: "S+konsonantti-alkuiset sanat käyttävät \"lo\"/\"gli\"/\"uno\".",
       },
       {
         question: "Mikä on \"il libro\":n monikko?",
-        options: ["i libri", "gli libri", "le libri", "i libro"],
-        correctIndex: 0,
+        options: ["gli libri", "i libri", "le libri", "i libro"],
+        correctIndex: 1,
         explanation: "Maskuliini yksikkö \"il\" → monikko \"i\".",
       },
       {
         question: "Mikä epämääräinen artikkeli sopii sanalle \"zaino\" (reppu)?",
-        options: ["uno zaino", "un zaino", "una zaino", "il zaino"],
-        correctIndex: 0,
+        options: ["un zaino", "una zaino", "il zaino", "uno zaino"],
+        correctIndex: 3,
         explanation: "Z-alkuiset sanat käyttävät \"uno\"/\"lo\"/\"gli\", kuten s+konsonantti.",
       },
       {
@@ -816,14 +816,14 @@ Italiassa käytetään monissa yhteyksissä KAKSOISKIELTOA, toisin kuin suomessa
     quiz: [
       {
         question: "Miten sanotaan \"En syö koskaan lihaa\" oikein?",
-        options: ["Non mangio mai la carne", "Mangio mai la carne", "Mai mangio non la carne", "Non mai mangio la carne"],
-        correctIndex: 0,
+        options: ["Mangio mai la carne", "Non mangio mai la carne", "Mai mangio non la carne", "Non mai mangio la carne"],
+        correctIndex: 1,
         explanation: "Italiassa kaksoiskielto on pakollinen: non + verbi + mai.",
       },
       {
         question: "Mikä täydentää lauseen oikein: \"Non conosco ___ qui.\" (En tunne ketään täällä)",
-        options: ["nessuno", "niente", "mai", "qualcuno"],
-        correctIndex: 0,
+        options: ["niente", "mai", "qualcuno", "nessuno"],
+        correctIndex: 3,
         explanation: "\"nessuno\" = ei kukaan, sopii henkilöön viittaavaan kieltoon.",
       },
       {
@@ -835,12 +835,12 @@ Italiassa käytetään monissa yhteyksissä KAKSOISKIELTOA, toisin kuin suomessa
       {
         question: "Miksi lauseessa \"Non lo vedo mai\" on sekä \"non\" että \"mai\", vaikka suomeksi sanomme vain \"En näe häntä koskaan\"?",
         options: [
-          "Italiassa kaksoiskielto (non...mai) on kieliopillisesti pakollinen, ei redundanttia",
           "Se on tyylivirhe joka pitäisi korjata",
           "\"mai\" tarkoittaa jotain muuta kuin koskaan",
+          "Italiassa kaksoiskielto (non...mai) on kieliopillisesti pakollinen, ei redundanttia",
           "\"non\" on turha tässä lauseessa",
         ],
-        correctIndex: 0,
+        correctIndex: 2,
         explanation: "Toisin kuin suomessa, italian kieltosanat (mai, niente, nessuno) VAATIVAT non-sanan verbin edestä.",
       },
     ],
@@ -876,8 +876,8 @@ Kirjain **"i"** puolestaan ilman omaa ääntämystä pehmentää a/o/u:n edellä
     quiz: [
       {
         question: "Miten \"cena\" (illallinen) äännetään?",
-        options: ["\"tšena\" (pehmeä tš-äänne)", "\"kena\" (kova k-äänne)", "\"sena\"", "\"hena\""],
-        correctIndex: 0,
+        options: ["\"kena\" (kova k-äänne)", "\"sena\"", "\"hena\"", "\"tšena\" (pehmeä tš-äänne)"],
+        correctIndex: 3,
         explanation: "ce/ci = pehmeä tš-äänne.",
       },
       {
@@ -889,18 +889,18 @@ Kirjain **"i"** puolestaan ilman omaa ääntämystä pehmentää a/o/u:n edellä
       {
         question: "Miksi \"chiesa\" (kirkko) äännetään kovalla k-äänteellä vaikka siinä on \"e\" perässä?",
         options: [
-          "\"h\"-kirjain che/chi-yhdistelmässä pakottaa kovan äänteen",
           "Se on poikkeus ilman syytä",
+          "\"h\"-kirjain che/chi-yhdistelmässä pakottaa kovan äänteen",
           "\"chi\" äännetään aina pehmeästi paitsi tässä sanassa",
           "Painotus vaikuttaa ääntämiseen",
         ],
-        correctIndex: 0,
+        correctIndex: 1,
         explanation: "\"h\" pehmentää säännön takaisin kovaksi (che/chi = kova k).",
       },
       {
         question: "Miten \"gelato\" (jäätelö) äännetään alussa?",
-        options: ["pehmeä dž-äänne (kuten engl. \"jam\")", "kova g-äänne", "j-äänne kuten suomessa", "h-äänne"],
-        correctIndex: 0,
+        options: ["kova g-äänne", "j-äänne kuten suomessa", "pehmeä dž-äänne (kuten engl. \"jam\")", "h-äänne"],
+        correctIndex: 2,
         explanation: "ge/gi = pehmeä dž-äänne.",
       },
     ],

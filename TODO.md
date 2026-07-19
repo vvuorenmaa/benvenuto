@@ -416,6 +416,12 @@ Käyttäjän valinta: aloitetaan pienellä osajoukolla, EI kaikkia 23 aihetta he
       a11y-guardian löysi kontrastivirheen (`bg-emerald-600 text-white` ~3.77:1, alle AA:n) — sama
       ongelma kuin aiemmin `kertaus/page.tsx`:ssä — korjattu `emerald-700`:ksi. `bg-red-600` laskettu
       itse tarkasti (~4.83:1) ja todettu riittäväksi, ei muutettu.
+- [x] **Jälkikäteen löydetty ja korjattu sisältövirhe** (käyttäjän huomio): 30/32 kysymyksestä oikea
+      vastaus oli AINA `options`-taulukon ensimmäinen alkio (`correctIndex: 0`), mikä teki kvizistä
+      helposti "läpihuudettavan" ilman todellista sisällön ymmärtämistä. Kaikki 32 kysymystä käytiin
+      läpi ja vaihtoehdot uudelleenjärjestettiin niin että oikea vastaus jakautuu tasaisemmin
+      (lopputulos: index0=7, index1=9, index2=8, index3=8 kertaa). Verifioitu selaimessa että
+      tarkistuslogiikka toimii oikein uusilla indekseillä.
 
 ### Epic 16 — Chat-historian selaus
 
