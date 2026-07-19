@@ -397,19 +397,25 @@ jo erikseen tietoisesti alempana backlogissa) — puhtaasti informatiivinen.
 - [x] Ei uutta sivupalkin nav-kohtaa — pysyy osana kertaus-sivua
 - [x] Testattu selaimessa Playwrightilla (dark-teema), tsc/eslint puhtaita, ei konsolivirheitä
 
-### Epic 15 — Kielioppikvizit (pieni osajoukko: 8 aihetta)
+### Epic 15 — Kielioppikvizit (pieni osajoukko: 8 aihetta) ✅ (2026-07-19)
 
 Käyttäjän valinta: aloitetaan pienellä osajoukolla, EI kaikkia 23 aihetta heti.
 
-- [ ] `lib/grammar/topics.ts`: `GrammarTopic`-tyyppiin valinnainen `quiz?: QuizQuestion[]`
-      (`{ question, options, correctIndex, explanation }`). 3–5 kysymystä kahdeksalle aiheelle:
+- [x] `lib/grammar/topics.ts`: `GrammarTopic`-tyyppiin valinnainen `quiz?: QuizQuestion[]`
+      (`{ question, options, correctIndex, explanation }`). 4 kysymystä kahdeksalle aiheelle:
       `passato-prossimo`, `imperfetto`, `pronomi-diretti`, `pronomi-indiretti`, `ci-ne`, `artikkelit`,
-      `negaatio`, `c-g-aanteet` (kattaa kaikki 4 kategoriaa + tunnetuimmat sekaannuskohdat)
-- [ ] `components/GrammarQuiz.tsx` (uusi): yksi kysymys kerrallaan, klikkaus → heti oikein/väärin
-      (`lucide-react` Check/X) + `explanation`, "Seuraava kysymys", lopussa `StatTile`-pistemäärä.
-      EI API-reittiä — tarkistus on deterministinen client-vertailu, ei LLM-kutsua tarvita
-- [ ] `app/(app)/kielioppi/[aihe]/page.tsx`: renderöi kvizin "Liittyvät sanat"-osion alle VAIN jos
+      `negaatio`, `c-g-aanteet` (kattaa kaikki 4 kategoriaa + tunnetuimmat sekaannuskohdat).
+      Verifioitu: 23 aihetta ennallaan, 8 kvizillä täsmälleen 4 kysymystä, kaikki `correctIndex`-arvot
+      validoituja.
+- [x] `components/GrammarQuiz.tsx` (uusi): yksi kysymys kerrallaan, klikkaus → heti oikein/väärin
+      (`lucide-react` Check/X) + `explanation`, "Seuraava kysymys", lopussa `StatTile`-pistemäärä +
+      "Yritä uudelleen". EI API-reittiä — tarkistus on deterministinen client-vertailu.
+- [x] `app/(app)/kielioppi/[aihe]/page.tsx`: renderöi kvizin "Liittyvät sanat"-osion alle VAIN jos
       `topic.quiz` on määritelty (muille 15 aiheelle ei tyhjää kviziosiota)
+- [x] Testattu selaimessa (dark-teema): oikea/väärä vastaus korostuu oikein, ei konsolivirheitä.
+      a11y-guardian löysi kontrastivirheen (`bg-emerald-600 text-white` ~3.77:1, alle AA:n) — sama
+      ongelma kuin aiemmin `kertaus/page.tsx`:ssä — korjattu `emerald-700`:ksi. `bg-red-600` laskettu
+      itse tarkasti (~4.83:1) ja todettu riittäväksi, ei muutettu.
 
 ### Epic 16 — Chat-historian selaus
 

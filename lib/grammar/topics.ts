@@ -1,9 +1,17 @@
+export type QuizQuestion = {
+  question: string;
+  options: string[];
+  correctIndex: number;
+  explanation: string;
+};
+
 export type GrammarTopic = {
   slug: string;
   title: string;
   category: "aikamuodot" | "pronominit" | "säännöt" | "ääntäminen";
   bodyMd: string;
   tags: string[];
+  quiz?: QuizQuestion[];
 };
 
 export const GRAMMAR_TOPICS: GrammarTopic[] = [
@@ -32,6 +40,37 @@ Monilla yleisillä verbeillä on epäsäännöllinen partisiippi, esim. fatto (f
 | Sono andato al mare. | Menin merelle. |
 | Hai visto il film? | Näitkö/oletko nähnyt elokuvan? |
 | Abbiamo fatto un errore. | Teimme virheen. |`,
+    quiz: [
+      {
+        question: "Mikä on oikea passato prossimo -muoto verbistä \"mangiare\" (minä-persoona)?",
+        options: ["Ho mangiato", "Sono mangiato", "Mangiavo", "Mangio"],
+        correctIndex: 0,
+        explanation: "\"Mangiare\" käyttää apuverbiä avere, ei essere — useimmat verbit käyttävät avere-apuverbiä.",
+      },
+      {
+        question: "Kumpi apuverbi kuuluu verbille \"andare\" (mennä) passato prossimossa?",
+        options: ["avere", "essere"],
+        correctIndex: 1,
+        explanation: "Liikeverbit kuten andare käyttävät essere-apuverbiä.",
+      },
+      {
+        question: "\"Lei è andata al mare.\" Miksi partisiippi on \"andata\" eikä \"andato\"?",
+        options: [
+          "Koska essere-apuverbin kanssa partisiippi taipuu tekijän suvun mukaan",
+          "Koska se on aina näin naispuolisille verbeille",
+          "Se on kirjoitusvirhe, pitäisi olla andato",
+          "Koska mare on feminiininen sana",
+        ],
+        correctIndex: 0,
+        explanation: "Essere-apuverbin kanssa partisiippi taipuu subjektin suvun/luvun mukaan (andato/andata/andati/andate).",
+      },
+      {
+        question: "Mikä on verbin \"fare\" (tehdä) epäsäännöllinen partisiippi?",
+        options: ["fatto", "faito", "facevo", "farò"],
+        correctIndex: 0,
+        explanation: "fare → fatto on epäsäännöllinen, kuten monet yleiset verbit.",
+      },
+    ],
   },
   {
     slug: "pronomi-indiretti",
@@ -64,6 +103,37 @@ Epäsuora pronomini korvaa "a + henkilö" -rakenteen: "Scrivo a Maria" → "Le s
 | Mi piace questo libro. | Pidän tästä kirjasta. (kirjaimellisesti: "se miellyttää minua") |
 | Le ho telefonato ieri. | Soitin hänelle (naiselle) eilen. |
 | Gli ho chiesto un favore. | Pyysin häneltä (mieheltä) palvelusta. |`,
+    quiz: [
+      {
+        question: "\"Scrivo a Maria.\" Korvaa \"a Maria\" epäsuoralla pronominilla:",
+        options: ["Le scrivo", "La scrivo", "Lo scrivo", "Ci scrivo"],
+        correctIndex: 0,
+        explanation: "Maria on nainen → \"le\" (hänelle, epäsuora), ei \"la\" (suora objekti).",
+      },
+      {
+        question: "\"Mi piace il caffè.\" Mikä on kirjaimellinen tulkinta rakenteesta?",
+        options: [
+          "Kahvi miellyttää minua (piacere kääntyy toisin päin kuin suomessa)",
+          "Pidän kahvista aivan kuin suomessakin suoraan",
+          "Mi on omistuspronomini",
+          "Il caffè on epäsuora objekti",
+        ],
+        correctIndex: 0,
+        explanation: "Piacere-rakenteessa asia on subjekti ja henkilö epäsuora objekti — käänteinen suomeen nähden.",
+      },
+      {
+        question: "Mikä pronomini tarkoittaa \"meille\"?",
+        options: ["ci", "vi", "gli", "mi"],
+        correctIndex: 0,
+        explanation: "\"ci\" = meille, \"vi\" = teille, \"mi\" = minulle.",
+      },
+      {
+        question: "\"Gli ho detto la verità.\" Kenelle puhuja kertoi totuuden?",
+        options: ["Hänelle (mies)", "Hänelle (nainen)", "Heille", "Minulle"],
+        correctIndex: 0,
+        explanation: "\"gli\" = hänelle (mies) epäsuorassa muodossa.",
+      },
+    ],
   },
   {
     slug: "painotus",
@@ -212,6 +282,37 @@ Nyrkkisääntö: jos kyse on toistuvasta tavasta, kuvailusta tai taustalla käyn
 | Ieri ho giocato a calcio. | Eilen pelasin jalkapalloa. |
 | Mentre studiavo, squillava il telefono. | Kun opiskelin, puhelin soi. |
 | Ero stanco tutti i giorni quella settimana. | Olin väsynyt joka päivä sinä viikkona. |`,
+    quiz: [
+      {
+        question: "Kumpi lause käyttää OIKEIN imperfettoa kuvaamaan toistuvaa lapsuuden tapaa?",
+        options: ["Da bambino giocavo sempre fuori", "Da bambino ho giocato sempre fuori", "Da bambino gioco sempre fuori", "Da bambino giocherò sempre fuori"],
+        correctIndex: 0,
+        explanation: "Toistuva tapa menneisyydessä ilmaistaan imperfektillä (giocavo), ei passato prossimolla.",
+      },
+      {
+        question: "Mikä on essere-verbin imperfetto minä-muodossa?",
+        options: ["ero", "sono stato", "sarò", "sia"],
+        correctIndex: 0,
+        explanation: "Essere on epäsäännöllinen imperfektissä: ero, eri, era...",
+      },
+      {
+        question: "\"Mentre studiavo, squillava il telefono.\" Miksi molemmat verbit ovat imperfektissä?",
+        options: [
+          "Molemmat kuvaavat samanaikaisia, käynnissä olleita taustatapahtumia",
+          "Koska lause on kysymys",
+          "Koska molemmat verbit ovat essere-verbejä",
+          "Se on virhe, toisen pitäisi olla passato prossimossa",
+        ],
+        correctIndex: 0,
+        explanation: "Kaksi rinnakkaista, käynnissä ollutta tapahtumaa kuvataan usein molemmat imperfektillä.",
+      },
+      {
+        question: "Mikä pääte kuuluu -are-verbin imperfettoon minä-muodossa?",
+        options: ["-avo", "-evo", "-ivo", "-ato"],
+        correctIndex: 0,
+        explanation: "-are-verbien imperfetto: -avo, -avi, -ava, -avamo, -avate, -avano.",
+      },
+    ],
   },
   {
     slug: "futuro-semplice",
@@ -356,6 +457,42 @@ Passato prossimossa partisiippi TAIPUU lo/la/li/le-pronominin suvun ja luvun muk
 | Voglio vederlo domani. | Haluan nähdä hänet huomenna. |
 | L'ho vista ieri. | Näin hänet (naisen) eilen. |
 | Li ho comprati al mercato. | Ostin ne (maskuliini, monikko) torilta. |`,
+    quiz: [
+      {
+        question: "\"Vedo Marco.\" Korvaa \"Marco\" suoralla objektipronominilla:",
+        options: ["Lo vedo", "Gli vedo", "Le vedo", "Ci vedo"],
+        correctIndex: 0,
+        explanation: "Marco on maskuliini yksikkö → \"lo\".",
+      },
+      {
+        question: "Mikä pronomini korvaa \"le ragazze\" (tytöt, feminiini monikko)?",
+        options: ["li", "le", "gli", "loro"],
+        correctIndex: 1,
+        explanation: "Feminiini monikko suora objekti = \"le\".",
+      },
+      {
+        question: "\"L'ho vista ieri.\" Miksi partisiippi on \"vista\" eikä \"visto\"?",
+        options: [
+          "Koska suora objektipronomini \"la\" (→ l') edeltää verbiä ja partisiippi taipuu sen mukaan",
+          "Koska se on naispuolinen puhuja",
+          "Se on kirjoitusvirhe",
+          "Koska ieri on feminiininen sana",
+        ],
+        correctIndex: 0,
+        explanation: "Kun suora objektipronomini (lo/la/li/le) edeltää passato prossimoa, partisiippi taipuu sen suvun/luvun mukaan.",
+      },
+      {
+        question: "\"Voglio vederlo.\" Miksi \"lo\" on liitetty verbin perään?",
+        options: [
+          "Koska infinitiivin (vedere) kanssa pronomini liitetään sen loppuun",
+          "Koska se on erisnimi",
+          "Se on virhe",
+          "Koska lo tarkoittaa jotain muuta liitettynä",
+        ],
+        correctIndex: 0,
+        explanation: "Infinitiivin kanssa suora/epäsuora objektipronomini liitetään yleensä sen loppuun yhdeksi sanaksi.",
+      },
+    ],
   },
   {
     slug: "pronomi-possessivi",
@@ -409,6 +546,32 @@ Näitä pidetään tyypillisesti hankalina juuri siksi, ettei suomessa ole vasta
 | Quanti libri hai? Ne ho tre. | Montako kirjaa sinulla on? Minulla on niitä kolme. |
 | Ci penso io. | Minä hoidan sen (kirj. "ajattelen sitä"). |
 | Ne parliamo domani. | Puhumme siitä huomenna. |`,
+    quiz: [
+      {
+        question: "\"Vai a Roma?\" \"Sì, ci vado.\" Mitä \"ci\" korvaa tässä?",
+        options: ["\"a Roma\" (paikka)", "\"Roma\" henkilönä", "Ei mitään, se on täytesana", "\"con Roma\""],
+        correctIndex: 0,
+        explanation: "\"ci\" korvaa a/in + paikka -ilmauksen.",
+      },
+      {
+        question: "\"Quanti libri hai?\" \"Ne ho tre.\" Mitä \"ne\" korvaa?",
+        options: ["\"di libri\" (määrää koskeva ilmaus)", "\"tre\" (numeron)", "\"quanti\" (kysymyssanan)", "Ei mitään"],
+        correctIndex: 0,
+        explanation: "\"ne\" korvaa \"di + asia/määrä\" -rakenteen.",
+      },
+      {
+        question: "Kumpi lause on oikein muodostettu?",
+        options: ["Ne voglio due", "Ci voglio due", "Lo voglio due", "Ne voglio a due"],
+        correctIndex: 0,
+        explanation: "\"Ne voglio due\" = \"Haluan niitä kaksi\" — ne korvaa määrän kohteen.",
+      },
+      {
+        question: "\"Pensi spesso al futuro?\" \"Sì, ci penso spesso.\" Mitä \"ci\" tässä korvaa?",
+        options: ["\"al futuro\" (asia josta ajatellaan)", "\"spesso\" (adverbin)", "\"pensi\"-verbin", "Ei mitään erityistä"],
+        correctIndex: 0,
+        explanation: "\"ci\" voi korvata myös \"a + asia\" tiettyjen verbien kanssa kuten \"pensare a\".",
+      },
+    ],
   },
   {
     slug: "pronomi-riflessivi",
@@ -458,6 +621,32 @@ Valinta il/lo (ja i/gli, un/uno) välillä ei riipu vain suvusta, vaan myös seu
 | la casa / le case | talo / talot |
 | un cane | koira |
 | una mela | omena |`,
+    quiz: [
+      {
+        question: "Mikä artikkeli sopii sanalle \"studente\" (opiskelija, alkaa s+konsonantilla)?",
+        options: ["lo studente", "il studente", "la studente", "un studente"],
+        correctIndex: 0,
+        explanation: "S+konsonantti-alkuiset sanat käyttävät \"lo\"/\"gli\"/\"uno\".",
+      },
+      {
+        question: "Mikä on \"il libro\":n monikko?",
+        options: ["i libri", "gli libri", "le libri", "i libro"],
+        correctIndex: 0,
+        explanation: "Maskuliini yksikkö \"il\" → monikko \"i\".",
+      },
+      {
+        question: "Mikä epämääräinen artikkeli sopii sanalle \"zaino\" (reppu)?",
+        options: ["uno zaino", "un zaino", "una zaino", "il zaino"],
+        correctIndex: 0,
+        explanation: "Z-alkuiset sanat käyttävät \"uno\"/\"lo\"/\"gli\", kuten s+konsonantti.",
+      },
+      {
+        question: "Mikä artikkeli sopii sanalle \"gnomo\" (menninkäinen, alkaa gn:llä)?",
+        options: ["lo gnomo", "il gnomo", "la gnomo", "un gnomo"],
+        correctIndex: 0,
+        explanation: "Gn-alkuiset sanat kuuluvat samaan erikoisryhmään kuin s+konsonantti/z (lo/gli/uno).",
+      },
+    ],
   },
   {
     slug: "prepositiot-artikoloidut",
@@ -624,6 +813,37 @@ Italiassa käytetään monissa yhteyksissä KAKSOISKIELTOA, toisin kuin suomessa
 | Non vado mai al cinema. | En koskaan mene elokuviin. |
 | Non conosco nessuno qui. | En tunne täällä ketään. |
 | Non fumo più. | En polta enää. |`,
+    quiz: [
+      {
+        question: "Miten sanotaan \"En syö koskaan lihaa\" oikein?",
+        options: ["Non mangio mai la carne", "Mangio mai la carne", "Mai mangio non la carne", "Non mai mangio la carne"],
+        correctIndex: 0,
+        explanation: "Italiassa kaksoiskielto on pakollinen: non + verbi + mai.",
+      },
+      {
+        question: "Mikä täydentää lauseen oikein: \"Non conosco ___ qui.\" (En tunne ketään täällä)",
+        options: ["nessuno", "niente", "mai", "qualcuno"],
+        correctIndex: 0,
+        explanation: "\"nessuno\" = ei kukaan, sopii henkilöön viittaavaan kieltoon.",
+      },
+      {
+        question: "\"Non ho niente da dire.\" Mitä tämä tarkoittaa?",
+        options: ["Minulla ei ole mitään sanottavaa", "Minulla on jotain sanottavaa", "En koskaan sano mitään", "En tunne ketään"],
+        correctIndex: 0,
+        explanation: "\"niente\" = ei mitään.",
+      },
+      {
+        question: "Miksi lauseessa \"Non lo vedo mai\" on sekä \"non\" että \"mai\", vaikka suomeksi sanomme vain \"En näe häntä koskaan\"?",
+        options: [
+          "Italiassa kaksoiskielto (non...mai) on kieliopillisesti pakollinen, ei redundanttia",
+          "Se on tyylivirhe joka pitäisi korjata",
+          "\"mai\" tarkoittaa jotain muuta kuin koskaan",
+          "\"non\" on turha tässä lauseessa",
+        ],
+        correctIndex: 0,
+        explanation: "Toisin kuin suomessa, italian kieltosanat (mai, niente, nessuno) VAATIVAT non-sanan verbin edestä.",
+      },
+    ],
   },
   {
     slug: "c-g-aanteet",
@@ -653,5 +873,36 @@ Kirjain **"i"** puolestaan ilman omaa ääntämystä pehmentää a/o/u:n edellä
 | chiesa | kirkko | kova k-äänne h:n ansiosta (chi) |
 | spaghetti | spagetti | kova g-äänne h:n ansiosta (ghe) |
 | arancia | appelsiini | pehmeä, ei erillistä i-äännettä (cia) |`,
+    quiz: [
+      {
+        question: "Miten \"cena\" (illallinen) äännetään?",
+        options: ["\"tšena\" (pehmeä tš-äänne)", "\"kena\" (kova k-äänne)", "\"sena\"", "\"hena\""],
+        correctIndex: 0,
+        explanation: "ce/ci = pehmeä tš-äänne.",
+      },
+      {
+        question: "Miten \"casa\" (talo) äännetään alussa?",
+        options: ["kova k-äänne", "pehmeä tš-äänne", "s-äänne", "h-äänne"],
+        correctIndex: 0,
+        explanation: "ca/co/cu = kova k-äänne.",
+      },
+      {
+        question: "Miksi \"chiesa\" (kirkko) äännetään kovalla k-äänteellä vaikka siinä on \"e\" perässä?",
+        options: [
+          "\"h\"-kirjain che/chi-yhdistelmässä pakottaa kovan äänteen",
+          "Se on poikkeus ilman syytä",
+          "\"chi\" äännetään aina pehmeästi paitsi tässä sanassa",
+          "Painotus vaikuttaa ääntämiseen",
+        ],
+        correctIndex: 0,
+        explanation: "\"h\" pehmentää säännön takaisin kovaksi (che/chi = kova k).",
+      },
+      {
+        question: "Miten \"gelato\" (jäätelö) äännetään alussa?",
+        options: ["pehmeä dž-äänne (kuten engl. \"jam\")", "kova g-äänne", "j-äänne kuten suomessa", "h-äänne"],
+        correctIndex: 0,
+        explanation: "ge/gi = pehmeä dž-äänne.",
+      },
+    ],
   },
 ];

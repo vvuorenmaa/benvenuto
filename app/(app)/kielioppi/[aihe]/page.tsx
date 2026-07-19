@@ -7,6 +7,7 @@ import { db } from "@/lib/db/client";
 import { vocabCards } from "@/lib/db/schema";
 import { getGrammarTopicBySlug } from "@/lib/grammar/search";
 import type { GrammarTopic } from "@/lib/grammar/topics";
+import { GrammarQuiz } from "@/components/GrammarQuiz";
 
 const CATEGORY_LABELS: Record<GrammarTopic["category"], string> = {
   aikamuodot: "Aikamuodot",
@@ -75,6 +76,8 @@ export default async function GrammarTopicPage({
               </div>
             </div>
           )}
+
+          {topic.quiz && <GrammarQuiz questions={topic.quiz} />}
         </div>
       </div>
     </div>
