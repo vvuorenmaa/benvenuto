@@ -76,7 +76,7 @@ export function ChatPanel({
     <div className="flex flex-col flex-1 min-h-0">
       <div className="flex-1 min-h-0 overflow-y-auto px-6 py-6 space-y-4">
         {messages.length === 0 && (
-          <p className="text-sm text-zinc-400 text-center mt-10">
+          <p className="text-sm text-stone-400 text-center mt-10">
             Aloita kirjoittamalla viesti alla olevaan kenttään.
           </p>
         )}
@@ -94,8 +94,8 @@ export function ChatPanel({
               <div
                 className={`rounded-3xl px-6 py-4 text-sm leading-relaxed whitespace-pre-wrap ${
                   message.role === "user"
-                    ? "bg-indigo-600 text-white"
-                    : "bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100"
+                    ? "bg-green-700 text-white"
+                    : "bg-stone-100 dark:bg-stone-900 text-stone-900 dark:text-stone-100"
                 }`}
               >
                 {message.role === "assistant" && (
@@ -124,7 +124,7 @@ export function ChatPanel({
 
         {status === "submitted" && (
           <div className="flex justify-start">
-            <div className="max-w-[80%] rounded-3xl px-6 py-4 text-sm bg-zinc-100 dark:bg-zinc-900 text-zinc-400">
+            <div className="max-w-[80%] rounded-3xl px-6 py-4 text-sm bg-stone-100 dark:bg-stone-900 text-stone-400">
               …
             </div>
           </div>
@@ -133,9 +133,9 @@ export function ChatPanel({
 
       <form
         onSubmit={handleSubmit}
-        className="border-t border-zinc-200 dark:border-zinc-800 px-6 py-4"
+        className="border-t border-stone-200 dark:border-stone-800 px-6 py-4"
       >
-        <div className="mx-auto flex max-w-3xl items-end gap-1 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-2 py-2 focus-within:ring-1 focus-within:ring-zinc-300 dark:focus-within:ring-zinc-700">
+        <div className="mx-auto flex max-w-3xl items-end gap-1 rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 px-2 py-2 focus-within:ring-1 focus-within:ring-stone-300 dark:focus-within:ring-stone-700">
           <MicButton
             onTranscript={(text) =>
               setInput((prev) => (prev.trim() ? `${prev.trim()} ${text}` : text))
@@ -161,10 +161,10 @@ export function ChatPanel({
             disabled={isBusy || !input.trim()}
             aria-label="Lähetä"
             title="Lähetä"
-            className={`flex shrink-0 items-center justify-center rounded-full p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:cursor-not-allowed ${
+            className={`flex shrink-0 items-center justify-center rounded-full p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-green-600 disabled:cursor-not-allowed ${
               input.trim()
-                ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                : "text-zinc-400 dark:text-zinc-600"
+                ? "bg-green-700 text-white hover:bg-green-800"
+                : "text-stone-400 dark:text-stone-600"
             }`}
           >
             <ArrowUp className="h-4 w-4" aria-hidden="true" />

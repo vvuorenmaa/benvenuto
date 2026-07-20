@@ -13,7 +13,7 @@ export function GrammarTopicLink({ text }: { text: string }) {
   return (
     <Link
       href={`/kielioppi/${topic.slug}`}
-      className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded"
+      className="text-xs text-green-700 dark:text-green-400 hover:underline focus:outline-none focus:ring-2 focus:ring-green-600 rounded"
     >
       {`→ ${topic.title}`}
     </Link>

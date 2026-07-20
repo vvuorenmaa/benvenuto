@@ -98,7 +98,7 @@ export function AudioPlayButton({
         disabled={isLoading}
         aria-label={ariaLabel}
         title={ariaLabel}
-        className={`flex items-center justify-center rounded p-0.5 text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:cursor-not-allowed ${
+        className={`flex items-center justify-center rounded p-0.5 text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300 transition-colors focus:outline-none focus:ring-2 focus:ring-green-600 disabled:cursor-not-allowed ${
           isLoading ? "animate-pulse motion-reduce:animate-none" : ""
         }`}
       >

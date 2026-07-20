@@ -34,9 +34,9 @@ export default async function KeskustelutPage() {
 
   return (
     <div className="flex flex-1 flex-col min-h-0">
-      <header className="border-b border-zinc-200 dark:border-zinc-800 px-4 py-5">
+      <header className="border-b border-stone-200 dark:border-stone-800 px-4 py-5">
         <h1 className="text-lg font-semibold">Keskusteluhistoria</h1>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+        <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
           Selaa aiempia keskustelujasi.
         </p>
       </header>
@@ -46,7 +46,7 @@ export default async function KeskustelutPage() {
           <p
             role="status"
             aria-live="polite"
-            className="text-sm text-zinc-400 text-center mt-10"
+            className="text-sm text-stone-400 text-center mt-10"
           >
             Ei vielä tallennettuja keskusteluja.
           </p>
@@ -56,17 +56,17 @@ export default async function KeskustelutPage() {
               <li key={session.sessionId}>
                 <Link
                   href={`/keskustelut/${session.sessionId}`}
-                  className="block rounded-xl border border-zinc-200 dark:border-zinc-800 px-4 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+                  className="block rounded-xl border border-stone-200 dark:border-stone-800 px-4 py-3 hover:bg-stone-50 dark:hover:bg-stone-900 focus:outline-none focus:ring-2 focus:ring-green-600 transition-colors"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800 px-2.5 py-0.5 text-xs font-medium text-zinc-600 dark:text-zinc-300">
+                    <span className="inline-flex items-center rounded-full bg-stone-100 dark:bg-stone-800 px-2.5 py-0.5 text-xs font-medium text-stone-600 dark:text-stone-300">
                       {modeLabel(session.mode)}
                     </span>
-                    <span className="shrink-0 text-xs text-zinc-500 dark:text-zinc-400">
+                    <span className="shrink-0 text-xs text-stone-500 dark:text-stone-400">
                       {formatStartedAt(session.startedAt)}
                     </span>
                   </div>
-                  <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300 line-clamp-2">
+                  <p className="mt-2 text-sm text-stone-700 dark:text-stone-300 line-clamp-2">
                     {session.preview || "(Ei esikatselua)"}
                   </p>
                 </Link>

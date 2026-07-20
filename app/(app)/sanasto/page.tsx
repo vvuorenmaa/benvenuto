@@ -37,7 +37,7 @@ const FILTERS: { id: FilterId; label: string }[] = [
 ];
 
 const STATUS_META: Record<VocabStatus, { label: string; dot: string }> = {
-  new: { label: "Uusi", dot: "bg-indigo-500" },
+  new: { label: "Uusi", dot: "bg-green-600" },
   due: { label: "Due nyt", dot: "bg-amber-500" },
   learned: { label: "Opittu", dot: "bg-emerald-500" },
 };
@@ -119,15 +119,15 @@ export default function SanastoPage() {
 
   return (
     <div className="flex flex-1 flex-col min-h-0">
-      <header className="border-b border-zinc-200 dark:border-zinc-800 px-4 py-5 space-y-4">
+      <header className="border-b border-stone-200 dark:border-stone-800 px-4 py-5 space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold">Sanasto</h1>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-zinc-500">{cards.length} sanaa</span>
+            <span className="text-sm text-stone-500">{cards.length} sanaa</span>
             <a
               href="/api/vocab/export"
               download
-              className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 rounded focus:outline-none focus:ring-2 focus:ring-green-600"
             >
               <Download className="h-3.5 w-3.5" aria-hidden="true" />
               Vie CSV
@@ -141,7 +141,7 @@ export default function SanastoPage() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Hae sana tai lause..."
           aria-label="Etsi sanastosta"
-          className="w-full rounded-xl border border-zinc-300 dark:border-zinc-700 bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
         />
 
         <nav className="flex flex-wrap gap-2">
@@ -150,10 +150,10 @@ export default function SanastoPage() {
               key={filter.id}
               onClick={() => setActiveFilter(filter.id)}
               aria-pressed={activeFilter === filter.id}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+              className={`rounded-full px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-green-600 ${
                 activeFilter === filter.id
-                  ? "bg-indigo-600 text-white"
-                  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                  ? "bg-green-700 text-white"
+                  : "bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700"
               }`}
             >
               {filter.label} · {countFor(filter.id)}
@@ -164,7 +164,7 @@ export default function SanastoPage() {
         {dueCount > 0 && (
           <Link
             href="/kertaus"
-            className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="inline-flex items-center justify-center rounded-xl bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800 transition-colors focus:outline-none focus:ring-2 focus:ring-green-600"
           >
             Aloita kertaus ({dueCount} due)
           </Link>
@@ -173,31 +173,31 @@ export default function SanastoPage() {
 
       <div className="flex-1 min-h-0 overflow-y-auto">
         {loading && (
-          <p role="status" aria-live="polite" className="text-sm text-zinc-400 text-center mt-10">
+          <p role="status" aria-live="polite" className="text-sm text-stone-400 text-center mt-10">
             Ladataan...
           </p>
         )}
 
         {!loading && error && (
-          <p role="status" aria-live="polite" className="text-sm text-zinc-400 text-center mt-10">
+          <p role="status" aria-live="polite" className="text-sm text-stone-400 text-center mt-10">
             Sanaston lataus epäonnistui. Yritä päivittää sivu.
           </p>
         )}
 
         {!loading && !error && cards.length === 0 && (
-          <p role="status" aria-live="polite" className="text-sm text-zinc-400 text-center mt-10">
+          <p role="status" aria-live="polite" className="text-sm text-stone-400 text-center mt-10">
             Sanasto täyttyy automaattisesti kun keskustelet — aloita chatista.
           </p>
         )}
 
         {!loading && !error && cards.length > 0 && filteredCards.length === 0 && (
-          <p role="status" aria-live="polite" className="text-sm text-zinc-400 text-center mt-10">
+          <p role="status" aria-live="polite" className="text-sm text-stone-400 text-center mt-10">
             Ei sanoja tässä suodattimessa.
           </p>
         )}
 
         {!loading && !error && filteredCards.length > 0 && (
-          <ul className="divide-y divide-zinc-200 dark:divide-zinc-800">
+          <ul className="divide-y divide-stone-200 dark:divide-stone-800">
             {filteredCards.map((card) => {
               const meta = STATUS_META[card.status];
               const tag = sourceLabel(card.sourceMode);
@@ -210,20 +210,20 @@ export default function SanastoPage() {
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-medium text-zinc-900 dark:text-zinc-100">
+                      <span className="font-medium text-stone-900 dark:text-stone-100">
                         {card.italian}
                       </span>
-                      <span className="inline-flex items-center gap-1 rounded-full bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 text-xs text-zinc-600 dark:text-zinc-300">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-stone-100 dark:bg-stone-800 px-2 py-0.5 text-xs text-stone-600 dark:text-stone-300">
                         <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
                         {meta.label}
                       </span>
                       {tag && (
-                        <span className="text-xs text-zinc-400 dark:text-zinc-500">
+                        <span className="text-xs text-stone-400 dark:text-stone-500">
                           {tag}
                         </span>
                       )}
                     </div>
-                    <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
+                    <p className="text-sm text-stone-500 dark:text-stone-400 mt-0.5">
                       {card.finnish}
                     </p>
                   </div>
@@ -233,7 +233,7 @@ export default function SanastoPage() {
                     disabled={isDeleting}
                     aria-label={`Poista sana ${card.italian}`}
                     title="Poista sana"
-                    className="shrink-0 rounded-full p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 disabled:opacity-40 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="shrink-0 rounded-full p-1.5 text-stone-400 hover:bg-stone-100 hover:text-stone-700 dark:hover:bg-stone-800 dark:hover:text-stone-200 disabled:opacity-40 transition-colors focus:outline-none focus:ring-2 focus:ring-green-600"
                   >
                     <Trash2 className="h-4 w-4" aria-hidden="true" />
                   </button>

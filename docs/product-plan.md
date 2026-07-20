@@ -178,3 +178,24 @@ valmiit, tarkka toteutus- ja verifiointiloki [../TODO.md](../TODO.md):ssa samann
 
 Ei riippuvuuksia epiikkojen välillä — toteutusjärjestys vapaa (suositus TODO.md:ssä: yksinkertai-
 simmasta monimutkaisimpaan, 14 → 18 → 15 → 17 → 16).
+
+## 10. Visuaalinen täysuudistus: Italia-teema (2026-07-20)
+
+Käyttäjä tuotti viisi brändi-SVG:tä Italian lipun sävyissä (vihreä/punainen/kerma), koki nykyisen
+zinc/indigo "SaaS/AI"-ilmeen liian geneeriseksi italian oppimissovellukselle. Suunniteltu ja
+toteutettu `EnterPlanMode`:lla — tarkka toteutus- ja verifiointiloki [../TODO.md](../TODO.md):ssa.
+
+Keskeiset päätökset:
+
+* **Ei custom-hex-värejä** — käytetty Tailwindin sisäänrakennettuja `stone-*` (neutraalit,
+  lämpimämpi kuin `zinc-*`) ja `green-*` (aksentti) -paletteja suoraan, koska ne ovat riittävän
+  lähellä brändi-ikonien sävyjä ilman käsin rakennetun väriskaalan riskiä.
+* **`red-*` pysyy koskemattomana** virhesemantiikkana (väärä vastaus kertauksessa/kvizissä) —
+  brändin punaista EI korotettu UI:n aksenttiväriksi, jottei se sekoitu virheilmaisuun.
+* **Kontrastisuhteet laskettu itse** relative luminance -kaavalla (ei arvailtu, ei luotettu pelkkään
+  a11y-guardian-agenttiin) — löydettiin että suora `indigo→green` samannumeroinen vaihto olisi
+  rikkonut WCAG AA:n (`green-600` vain 3.30:1 vaaleaa taustaa vasten), korjattu tummentamalla yksi
+  Tailwind-askel (`green-700`).
+* Käyttäjä pyysi kesken toteutuksen palaamaan vanhoihin väreihin + laajaa lisälaajennusta — vahvistettu
+  AskUserQuestion-kierroksella että Italia-teema pysyy ja lisälaajennus siirtyy erilliseksi
+  myöhemmäksi suunnittelukierrokseksi.

@@ -237,14 +237,14 @@ export default function KertausPage() {
         <div
           role="status"
           aria-live="polite"
-          className="fixed top-4 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-zinc-900 dark:bg-zinc-100 px-4 py-2 text-xs font-medium text-white dark:text-zinc-900 shadow-lg transition-opacity"
+          className="fixed top-4 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-stone-900 dark:bg-stone-100 px-4 py-2 text-xs font-medium text-white dark:text-stone-900 shadow-lg transition-opacity"
         >
           {lastFeedback}
         </div>
       )}
 
       {phase === "loading" && (
-        <p role="status" aria-live="polite" className="text-sm text-zinc-400">
+        <p role="status" aria-live="polite" className="text-sm text-stone-400">
           Ladataan kertausta...
         </p>
       )}
@@ -253,7 +253,7 @@ export default function KertausPage() {
         <p
           role="status"
           aria-live="polite"
-          className="text-sm text-zinc-400 text-center max-w-sm"
+          className="text-sm text-stone-400 text-center max-w-sm"
         >
           Kertauksen lataus epäonnistui. Yritä päivittää sivu.
         </p>
@@ -265,13 +265,13 @@ export default function KertausPage() {
           aria-live="polite"
           className="flex flex-col items-center gap-4 text-center max-w-sm"
         >
-          <PartyPopper className="h-8 w-8 text-indigo-500" aria-hidden="true" />
+          <PartyPopper className="h-8 w-8 text-green-600" aria-hidden="true" />
           <p className="text-lg font-semibold">
             Ei kertausta juuri nyt — kaikki ajan tasalla!
           </p>
           <Link
             href="/sanasto"
-            className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="text-sm font-medium text-green-700 dark:text-green-400 hover:underline rounded focus:outline-none focus:ring-2 focus:ring-green-600"
           >
             Takaisin sanastoon
           </Link>
@@ -282,7 +282,7 @@ export default function KertausPage() {
         <div className="flex flex-col items-center gap-6 text-center max-w-sm">
           <div>
             <p className="text-lg font-semibold">Tämän päivän kertaus</p>
-            <p className="text-sm text-zinc-500 mt-1">
+            <p className="text-sm text-stone-500 mt-1">
               <span className="font-mono">{cards.length}</span> sanaa odottaa kertausta
             </p>
           </div>
@@ -296,14 +296,14 @@ export default function KertausPage() {
             />
           </div>
 
-          <p className="text-sm text-zinc-500 max-w-xs">
+          <p className="text-sm text-stone-500 max-w-xs">
             Kertaus on aktiivista tuottamista: kirjoita tai sano suomennos ääneen ennen
             kuin näet oikean vastauksen. Järjestelmä tarkistaa vastauksesi puolestasi.
           </p>
 
           <button
             onClick={handleStart}
-            className="rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="rounded-xl bg-green-700 px-6 py-2.5 text-sm font-medium text-white hover:bg-green-800 transition-colors focus:outline-none focus:ring-2 focus:ring-green-600"
           >
             Aloita kertaus
           </button>
@@ -314,12 +314,12 @@ export default function KertausPage() {
               onClick={() => setIsHowOpen((open) => !open)}
               aria-expanded={isHowOpen}
               aria-controls="kertaus-how-it-works"
-              className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="text-xs text-green-700 dark:text-green-400 hover:underline rounded focus:outline-none focus:ring-2 focus:ring-green-600"
             >
               Miten tämä toimii?
             </button>
             {isHowOpen && (
-              <p id="kertaus-how-it-works" className="text-xs text-zinc-500 max-w-xs">
+              <p id="kertaus-how-it-works" className="text-xs text-stone-500 max-w-xs">
                 Kirjoita tai sano suomennos jokaiselle sanalle — järjestelmä tarkistaa
                 vastauksesi automaattisesti ja päättää sen perusteella kertausvälin.
                 Oikein menneet sanat palaavat harvemmin, väärin menneet useammin. Näin
@@ -334,7 +334,7 @@ export default function KertausPage() {
         currentCard && (
           <div className="flex w-full max-w-md flex-col items-center gap-6">
             <div className="flex w-full flex-col items-center gap-2">
-              <p className="text-sm text-zinc-500">
+              <p className="text-sm text-stone-500">
                 <span className="font-mono">
                   {currentIndex + 1} / {cards.length}
                 </span>
@@ -353,8 +353,8 @@ export default function KertausPage() {
                     aria-hidden="true"
                     className={
                       i <= currentIndex
-                        ? "h-1.5 flex-1 rounded-full bg-indigo-600"
-                        : "h-1.5 flex-1 rounded-full bg-zinc-200 dark:bg-zinc-800"
+                        ? "h-1.5 flex-1 rounded-full bg-green-700"
+                        : "h-1.5 flex-1 rounded-full bg-stone-200 dark:bg-stone-800"
                     }
                   />
                 ))}
@@ -362,23 +362,23 @@ export default function KertausPage() {
             </div>
 
             {phase === "answering" && (
-              <p className="text-xs text-zinc-500">Kirjoita tai sano suomennos</p>
+              <p className="text-xs text-stone-500">Kirjoita tai sano suomennos</p>
             )}
 
-            <div className="w-full rounded-2xl border border-zinc-200 dark:border-zinc-800 p-8 flex flex-col items-center gap-4 text-center">
+            <div className="w-full rounded-2xl border border-stone-200 dark:border-stone-800 p-8 flex flex-col items-center gap-4 text-center">
               <p className="text-2xl font-semibold">{currentCard.italian}</p>
 
               {(phase === "checking" || phase === "revealed") && (
                 <div role="status" aria-live="polite" className="contents">
                   {phase === "checking" && (
-                    <p className="text-sm text-zinc-400 animate-pulse motion-reduce:animate-none">
+                    <p className="text-sm text-stone-400 animate-pulse motion-reduce:animate-none">
                       Tarkistetaan...
                     </p>
                   )}
 
                   {phase === "revealed" && checkResult && (
                     <>
-                      <div className="w-full border-t border-zinc-200 dark:border-zinc-800" />
+                      <div className="w-full border-t border-stone-200 dark:border-stone-800" />
                       <div
                         className={
                           checkResult.correct
@@ -394,16 +394,16 @@ export default function KertausPage() {
                         <span>{checkResult.correct ? "Oikein!" : "Väärin"}</span>
                       </div>
                       {submittedAnswer && (
-                        <p className="text-xs text-zinc-500">
+                        <p className="text-xs text-stone-500">
                           Vastasit: {submittedAnswer}
                         </p>
                       )}
-                      <p className="text-base text-zinc-700 dark:text-zinc-300">
+                      <p className="text-base text-stone-700 dark:text-stone-300">
                         {currentCard.finnish}
                       </p>
-                      <p className="text-sm text-zinc-500">{checkResult.feedback}</p>
+                      <p className="text-sm text-stone-500">{checkResult.feedback}</p>
                       {currentCard.exampleIt && (
-                        <div className="w-full rounded-xl bg-zinc-50 dark:bg-zinc-900 p-3 text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
+                        <div className="w-full rounded-xl bg-stone-50 dark:bg-stone-900 p-3 text-sm text-stone-600 dark:text-stone-400 space-y-1">
                           <p className="italic">{currentCard.exampleIt}</p>
                           {currentCard.exampleFi && <p>{currentCard.exampleFi}</p>}
                         </div>
@@ -416,7 +416,7 @@ export default function KertausPage() {
 
             {(phase === "answering" || phase === "checking") && (
               <div className="flex w-full flex-col items-center gap-2">
-                <div className="flex w-full items-center gap-1 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-2 py-2 focus-within:ring-1 focus-within:ring-zinc-300 dark:focus-within:ring-zinc-700">
+                <div className="flex w-full items-center gap-1 rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 px-2 py-2 focus-within:ring-1 focus-within:ring-stone-300 dark:focus-within:ring-stone-700">
                   <MicButton
                     onTranscript={(text) =>
                       setAnswerInput((prev) => (prev.trim() ? `${prev.trim()} ${text}` : text))
@@ -444,7 +444,7 @@ export default function KertausPage() {
                   <button
                     onClick={() => void handleCheckAnswer()}
                     disabled={!answerInput.trim() || phase === "checking"}
-                    className="shrink-0 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="shrink-0 rounded-xl bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800 transition-colors focus:outline-none focus:ring-2 focus:ring-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Tarkista
                   </button>
@@ -454,7 +454,7 @@ export default function KertausPage() {
                   type="button"
                   onClick={handleDontKnow}
                   disabled={phase === "checking"}
-                  className="text-xs text-zinc-500 hover:underline rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="text-xs text-stone-500 hover:underline rounded focus:outline-none focus:ring-2 focus:ring-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   En tiedä / Näytä vastaus
                 </button>
@@ -465,7 +465,7 @@ export default function KertausPage() {
               <button
                 ref={primaryButtonRef}
                 onClick={handleNextCard}
-                className="rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="rounded-xl bg-green-700 px-6 py-2.5 text-sm font-medium text-white hover:bg-green-800 transition-colors focus:outline-none focus:ring-2 focus:ring-green-600"
               >
                 Seuraava kortti
               </button>
@@ -485,13 +485,13 @@ export default function KertausPage() {
           <div className="flex gap-3 mt-2">
             <Link
               href="/sanasto"
-              className="rounded-xl bg-zinc-100 dark:bg-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="rounded-xl bg-stone-100 dark:bg-stone-800 px-4 py-2.5 text-sm font-medium text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-600"
             >
               Takaisin sanastoon
             </Link>
             <Link
               href="/"
-              className="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="rounded-xl bg-green-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-green-800 transition-colors focus:outline-none focus:ring-2 focus:ring-green-600"
             >
               Chattiin
             </Link>

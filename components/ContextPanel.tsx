@@ -87,7 +87,7 @@ function NewWordsSection({
       {newWords.length > 0 && (
         <ul className="mt-3 space-y-1.5">
           {newWords.slice(0, 5).map((card) => (
-            <li key={card.id} className="text-sm text-zinc-700 dark:text-zinc-300">
+            <li key={card.id} className="text-sm text-stone-700 dark:text-stone-300">
               {card.italian}
             </li>
           ))}
@@ -106,10 +106,10 @@ function RelatedGrammarSection({ latestAssistantText }: { latestAssistantText: s
   return (
     <div>
       <p className="text-sm font-semibold mb-2">Liittyvä kielioppi</p>
-      <p className="text-sm text-indigo-600 dark:text-indigo-400">{`→ ${topic.title}`}</p>
+      <p className="text-sm text-green-700 dark:text-green-400">{`→ ${topic.title}`}</p>
       <Link
         href={`/kielioppi/${topic.slug}`}
-        className="mt-2 inline-flex items-center text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded"
+        className="mt-2 inline-flex items-center text-xs font-medium text-green-700 dark:text-green-400 hover:underline focus:outline-none focus:ring-2 focus:ring-green-600 rounded"
       >
         Avaa aihe →
       </Link>
@@ -176,7 +176,7 @@ export function ContextPanel(props: ContextPanelProps) {
   return (
     <>
       {/* Desktop-kontekstipaneeli — vain Keskustelu-näkymässä, vain isoilla näytöillä */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-64 shrink-0 border-l border-zinc-200 dark:border-zinc-800 p-4 space-y-6 overflow-y-auto">
+      <aside className="hidden lg:flex lg:flex-col lg:w-64 shrink-0 border-l border-stone-200 dark:border-stone-800 p-4 space-y-6 overflow-y-auto">
         <p className="text-sm font-semibold">Tässä keskustelussa</p>
         <ContextPanelContent {...props} />
       </aside>
@@ -189,7 +189,7 @@ export function ContextPanel(props: ContextPanelProps) {
         aria-label="Avaa keskustelun tiedot"
         aria-haspopup="dialog"
         aria-expanded={isSheetOpen}
-        className="fixed bottom-36 right-4 md:bottom-24 z-20 rounded-full bg-indigo-600 text-white p-3 shadow-lg lg:hidden focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        className="fixed bottom-36 right-4 md:bottom-24 z-20 rounded-full bg-green-700 text-white p-3 shadow-lg lg:hidden focus:outline-none focus:ring-2 focus:ring-green-600"
       >
         <Info className="h-5 w-5" aria-hidden="true" />
       </button>
@@ -208,7 +208,7 @@ export function ContextPanel(props: ContextPanelProps) {
             aria-modal="true"
             aria-label="Keskustelun tiedot"
             tabIndex={-1}
-            className="fixed inset-x-0 bottom-0 rounded-t-2xl border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-4 max-h-[70vh] overflow-y-auto space-y-6 shadow-lg transition-transform focus:outline-none"
+            className="fixed inset-x-0 bottom-0 rounded-t-2xl border-t border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-950 p-4 max-h-[70vh] overflow-y-auto space-y-6 shadow-lg transition-transform focus:outline-none"
           >
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold">Tässä keskustelussa</p>
@@ -216,7 +216,7 @@ export function ContextPanel(props: ContextPanelProps) {
                 type="button"
                 onClick={closeSheet}
                 aria-label="Sulje keskustelun tiedot"
-                className="rounded p-1 text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="rounded p-1 text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 focus:outline-none focus:ring-2 focus:ring-green-600"
               >
                 <X className="h-4 w-4" aria-hidden="true" />
               </button>

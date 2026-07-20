@@ -57,28 +57,28 @@ export function GrammarQuiz({ questions }: { questions: QuizQuestion[] }) {
 
   return (
     <div>
-      <h2 className="text-sm font-semibold mb-3 text-zinc-900 dark:text-zinc-100">
+      <h2 className="text-sm font-semibold mb-3 text-stone-900 dark:text-stone-100">
         Testaa ymmärryksesi
       </h2>
 
       {(phase === "question" || phase === "answered") && (
         <div className="flex flex-col gap-4">
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-stone-500">
             Kysymys{" "}
             <span className="font-mono">
               {currentIndex + 1} / {questions.length}
             </span>
           </p>
 
-          <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6 flex flex-col gap-4">
-            <p className="text-base font-medium text-zinc-900 dark:text-zinc-100">
+          <div className="rounded-2xl border border-stone-200 dark:border-stone-800 p-6 flex flex-col gap-4">
+            <p className="text-base font-medium text-stone-900 dark:text-stone-100">
               {currentQuestion.question}
             </p>
 
             <div className="flex flex-col gap-2">
               {currentQuestion.options.map((option, index) => {
                 let stateClasses =
-                  "border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800";
+                  "border-stone-200 dark:border-stone-800 hover:bg-stone-100 dark:hover:bg-stone-800";
 
                 if (phase === "answered") {
                   if (index === currentQuestion.correctIndex) {
@@ -86,7 +86,7 @@ export function GrammarQuiz({ questions }: { questions: QuizQuestion[] }) {
                   } else if (index === selectedIndex) {
                     stateClasses = "border-transparent bg-red-600 text-white";
                   } else {
-                    stateClasses = "border-zinc-200 dark:border-zinc-800 opacity-60";
+                    stateClasses = "border-stone-200 dark:border-stone-800 opacity-60";
                   }
                 }
 
@@ -99,7 +99,7 @@ export function GrammarQuiz({ questions }: { questions: QuizQuestion[] }) {
                     type="button"
                     onClick={() => handleSelectOption(index)}
                     disabled={phase === "answered"}
-                    className={`w-full text-left rounded-xl border px-4 py-3 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:cursor-not-allowed ${stateClasses}`}
+                    className={`w-full text-left rounded-xl border px-4 py-3 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-green-600 disabled:cursor-not-allowed ${stateClasses}`}
                   >
                     {option}
                   </button>
@@ -109,7 +109,7 @@ export function GrammarQuiz({ questions }: { questions: QuizQuestion[] }) {
 
             {phase === "answered" && (
               <div role="status" aria-live="polite" className="contents">
-                <div className="w-full border-t border-zinc-200 dark:border-zinc-800" />
+                <div className="w-full border-t border-stone-200 dark:border-stone-800" />
                 <div
                   className={
                     isCorrect
@@ -124,7 +124,7 @@ export function GrammarQuiz({ questions }: { questions: QuizQuestion[] }) {
                   )}
                   <span>{isCorrect ? "Oikein!" : "Väärin"}</span>
                 </div>
-                <p className="text-sm text-zinc-500">{currentQuestion.explanation}</p>
+                <p className="text-sm text-stone-500">{currentQuestion.explanation}</p>
               </div>
             )}
           </div>
@@ -133,7 +133,7 @@ export function GrammarQuiz({ questions }: { questions: QuizQuestion[] }) {
             <button
               type="button"
               onClick={handleNext}
-              className="self-start rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="self-start rounded-xl bg-green-700 px-6 py-2.5 text-sm font-medium text-white hover:bg-green-800 transition-colors focus:outline-none focus:ring-2 focus:ring-green-600"
             >
               {isLastQuestion ? "Näytä tulos" : "Seuraava kysymys"}
             </button>
@@ -145,10 +145,10 @@ export function GrammarQuiz({ questions }: { questions: QuizQuestion[] }) {
         <div
           role="status"
           aria-live="polite"
-          className="flex flex-col items-center gap-4 text-center rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6"
+          className="flex flex-col items-center gap-4 text-center rounded-2xl border border-stone-200 dark:border-stone-800 p-6"
         >
           <StatTile value={`${score} / ${questions.length}`} label="Oikein" />
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-stone-500">
             {score === questions.length
               ? "Täydellistä! Hallitset tämän aiheen erinomaisesti."
               : "Hyvää työtä — voit yrittää uudelleen kerrataksesi aihetta."}
@@ -156,7 +156,7 @@ export function GrammarQuiz({ questions }: { questions: QuizQuestion[] }) {
           <button
             type="button"
             onClick={handleRestart}
-            className="rounded-xl bg-zinc-100 dark:bg-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="rounded-xl bg-stone-100 dark:bg-stone-800 px-4 py-2.5 text-sm font-medium text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-600"
           >
             Yritä uudelleen
           </button>

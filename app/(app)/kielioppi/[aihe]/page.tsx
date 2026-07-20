@@ -39,27 +39,27 @@ export default async function GrammarTopicPage({
         <div className="mx-auto max-w-2xl space-y-6">
           <Link
             href="/kielioppi"
-            className="inline-flex items-center gap-1 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="inline-flex items-center gap-1 text-sm font-medium text-green-700 dark:text-green-400 hover:underline rounded focus:outline-none focus:ring-2 focus:ring-green-600"
           >
             ← Kielioppikirjasto
           </Link>
 
           <div className="flex items-start justify-between gap-3">
-            <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+            <h1 className="text-xl font-semibold text-stone-900 dark:text-stone-100">
               {topic.title}
             </h1>
-            <span className="shrink-0 inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 text-xs text-zinc-600 dark:text-zinc-300">
+            <span className="shrink-0 inline-flex items-center rounded-full bg-stone-100 dark:bg-stone-800 px-2.5 py-1 text-xs text-stone-600 dark:text-stone-300">
               {CATEGORY_LABELS[topic.category]}
             </span>
           </div>
 
-          <div className="prose prose-sm dark:prose-invert max-w-none prose-a:text-indigo-600 dark:prose-a:text-indigo-400">
+          <div className="prose prose-sm dark:prose-invert max-w-none prose-a:text-green-700 dark:prose-a:text-green-400">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{topic.bodyMd}</ReactMarkdown>
           </div>
 
           {relatedCards.length > 0 && (
             <div>
-              <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+              <h2 className="text-sm font-semibold text-stone-900 dark:text-stone-100 mb-2">
                 Liittyvät sanat sanavarastossasi
               </h2>
               <div className="flex flex-wrap gap-2">
@@ -68,7 +68,7 @@ export default async function GrammarTopicPage({
                     key={card.id}
                     href="/sanasto"
                     aria-label={`Avaa sanasto — liittyvä sana: ${card.italian}`}
-                    className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800 px-3 py-1 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+                    className="inline-flex items-center rounded-full bg-stone-100 dark:bg-stone-800 px-3 py-1 text-xs text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700 focus:outline-none focus:ring-2 focus:ring-green-600 transition-colors"
                   >
                     {card.italian}
                   </Link>

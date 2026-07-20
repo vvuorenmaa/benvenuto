@@ -59,17 +59,17 @@ export default async function KeskusteluPage({
 
   return (
     <div className="flex flex-1 flex-col min-h-0">
-      <header className="border-b border-zinc-200 dark:border-zinc-800 px-6 py-5 space-y-2">
+      <header className="border-b border-stone-200 dark:border-stone-800 px-6 py-5 space-y-2">
         <Link
           href="/keskustelut"
-          className="inline-flex items-center gap-1 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="inline-flex items-center gap-1 text-sm font-medium text-green-700 dark:text-green-400 hover:underline rounded focus:outline-none focus:ring-2 focus:ring-green-600"
         >
           ← Takaisin historiaan
         </Link>
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-lg font-semibold">{modeLabel(data.mode)}</h1>
           {startedAt !== undefined && (
-            <span className="text-xs text-zinc-500 dark:text-zinc-400">
+            <span className="text-xs text-stone-500 dark:text-stone-400">
               {formatStartedAt(startedAt)}
             </span>
           )}
@@ -86,8 +86,8 @@ export default async function KeskusteluPage({
               aria-label={message.role === "user" ? "Oma viesti" : "Opettajan viesti"}
               className={`max-w-[80%] rounded-3xl px-6 py-4 text-sm leading-relaxed whitespace-pre-wrap ${
                 message.role === "user"
-                  ? "bg-indigo-600 text-white"
-                  : "bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100"
+                  ? "bg-green-700 text-white"
+                  : "bg-stone-100 dark:bg-stone-900 text-stone-900 dark:text-stone-100"
               }`}
             >
               {message.role === "assistant" ? (

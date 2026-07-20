@@ -33,7 +33,7 @@ export function ThemeToggle() {
     <div
       role="radiogroup"
       aria-label="Teeman valinta"
-      className="inline-flex w-full rounded-lg bg-zinc-100 dark:bg-zinc-800 p-1"
+      className="inline-flex w-full rounded-lg bg-stone-100 dark:bg-stone-800 p-1"
     >
       {OPTIONS.map((option) => {
         const active = theme === option.value;
@@ -47,10 +47,10 @@ export function ThemeToggle() {
             aria-checked={active}
             onClick={() => setTheme(option.value)}
             aria-label={option.label}
-            className={`flex flex-1 items-center justify-center rounded-md py-1.5 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+            className={`flex flex-1 items-center justify-center rounded-md py-1.5 transition-colors focus:outline-none focus:ring-2 focus:ring-green-600 ${
               active
-                ? "bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-50 shadow-sm"
-                : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200"
+                ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-50 shadow-sm"
+                : "text-stone-500 hover:text-stone-900 dark:hover:text-stone-200"
             }`}
           >
             <Icon className="h-4 w-4" aria-hidden="true" />

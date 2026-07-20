@@ -132,12 +132,12 @@ export function MicButton({
         disabled={disabled || isTranscribing}
         aria-label={ariaLabel}
         title={ariaLabel}
-        className={`flex items-center justify-center rounded-full p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:cursor-not-allowed ${
+        className={`flex items-center justify-center rounded-full p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-green-600 disabled:cursor-not-allowed ${
           permissionError
             ? "bg-red-500/10 text-red-500"
             : state === "recording"
               ? "bg-red-500/10 text-red-500 animate-pulse motion-reduce:animate-none"
-              : "text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              : "text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800"
         } ${isTranscribing ? "opacity-60 animate-pulse motion-reduce:animate-none" : ""}`}
       >
         <Mic className="h-4 w-4" aria-hidden="true" />

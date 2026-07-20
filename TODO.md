@@ -602,6 +602,48 @@ avulla, itse pistokokein varmistettuna) muiden vastaavien virheiden varalta.
       koko putki oikealla chat-viestillä (`/api/chat`) — uusia kortteja syntyi odotetusti, ei
       duplikaatteja, ei roskadataa. tsc/eslint puhtaita.
 
+## Visuaalinen täysuudistus: Italia-teema (2026-07-20)
+
+Käyttäjä tuotti viisi uutta brändi-SVG:tä Italian lipun sävyissä (vihreä/punainen/kerma). Koko
+väripaletti vaihdettu zinc/indigo:sta stone/green:iin, sivupalkin lucide-ikonit korvattu uusilla
+brändi-ikoneilla. Suunnitelma tehtiin `EnterPlanMode`:lla ennen toteutusta (ks. tarkka väriratkaisun
+perustelu ja kontrastilaskelmat suunnitelmatiedostosta — tiivistetty alla).
+
+- [x] Väripaletin substituutio (328 korvausta 17 tiedostossa): `indigo-400→green-400`,
+      `indigo-500→green-600`, `indigo-600→green-700`, `indigo-700→green-800`, `zinc-{N}→stone-{N}`
+      (suora numerovaihto). `emerald-*` ja `red-*` (oikein/väärin-semantiikka) EI kosketettu.
+      **Kriittinen kontrastilöydös** (itse laskettu relative luminance -kaavalla, ei arvailtu):
+      suora `indigo-600→green-600` -vaihto olisi RIKKONUT WCAG AA:n (`green-600` vs vaalea tausta
+      = 3.30:1, FAIL) — täytyi käyttää `green-700` (5.02:1, PASS) tekstille/napeille. Fokusrenkaat
+      vastaavasti `indigo-500→green-600` (ei `green-500`, joka antaa vain 2.18:1 ei-tekstikontraktia).
+- [x] Viisi brändi-SVG:tä siirretty `public/icons/`:iin selkeillä nimillä (`chat.svg`, `vocab.svg`,
+      `review.svg`, `grammar.svg`, `audio.svg`), korvaavat `Sidebar.tsx`:n lucide-react-ikonit
+      (`MessageSquare`/`BookOpen`/`History`/`GraduationCap`). Koska SVG:t ovat kiinteävärisiä
+      moniväri-illustraatioita (ei `currentColor`), aktiivinen/passiivinen-tila toteutettu
+      opacity-pohjaisesti (`opacity-100`/`opacity-50 group-hover:opacity-75`) olemassa olevien
+      indikaattorien (pystyviiva, tekstiväri) LISÄKSI, ei niiden sijaan.
+- [x] `audio.svg` valittu sovelluksen faviconiksi (`app/layout.tsx` metadata) — ääni/puhe on
+      sovelluksen erottuva ominaisuus. Vanha oletus-`favicon.ico` (Next.js-scaffolding) poistettu
+      päällekkäisyyden välttämiseksi.
+- [x] **Jälkikäteen löydetty ja korjattu**: käyttäjä huomasi uudet SVG-ikonit liian pieniksi/
+      epäselviksi 20px-koossa (`h-5 w-5`) — testattu kokovertailu (20/32/40/56px) osoitti että
+      32px on selkeä raja jolla illustraatiot erottuvat kunnolla. Korjattu `h-8 w-8` (desktop) /
+      `h-7 w-7` (mobiili, tilarajoitteen takia).
+- [x] a11y-guardian-auditti: useimmat löydökset osoittautuivat itse laskettuina vääriksi tai
+      liioitelluiksi (mm. väitetty mobiilibadgen dark-mode-kontrastivirhe — todellisuudessa
+      kiinteä väripari `bg-green-700`+valkoinen teksti, 5.02:1, ei riipu sivun teemasta; väitetty
+      "heikko" due-badge-kontrasti oli todellisuudessa 9.42:1). Yksi pieni korjaus tehty siitä
+      huolimatta (mobiili-ikonin `aria-hidden` lisätty konsistenssin vuoksi, vaikka ympäröivä
+      elementti jo piilotti sen ruudunlukijalta).
+- [x] Verifioitu: `npx tsc --noEmit` + `npx eslint .` puhtaita (2 hyväksyttyä `no-img-element`-
+      varoitusta pienille dekoratiivisille SVG-ikoneille, ei virheitä), `npm run build` vihreä,
+      Playwright-visuaalinen kierros KAIKILLA sivuilla (etusivu/sanasto/kertaus/kielioppi+aihesivu/
+      keskustelut) sekä vaaleassa että tummassa teemassa + mobiilileveydellä, ei konsolivirheitä.
+- [x] Käyttäjä pyysi väliaikaisesti (mid-turn) palaamaan indigo/zinc-väreihin + laajaa muuta UI-
+      uudistusta (hero-aloitusnäkymä, sivupalkkikortti, ym.) — AskUserQuestion-kierroksella
+      päätettiin PYSYÄ Italia-teemassa ja rajata tämä kierros vain ikonikokoon. Muut ehdotukset
+      jätetty tulevaksi, erilliseksi suunnittelukierrokseksi.
+
 ## Päätökset ja poikkeamat alkuperäisestä PRD:stä
 
 - Client lähettää API:lle `mode`-tunnisteen (ei valmista `systemPrompt`-merkkijonoa).
