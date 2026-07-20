@@ -91,6 +91,68 @@ function normalizeItalian(italian: string): string {
   return italian.trim().toLowerCase();
 }
 
+const ValidationSchema = z.object({
+  items: z.array(
+    z.object({
+      isValidItalian: z.boolean(),
+      finnishTranslation: z.string(),
+    }),
+  ),
+});
+
+const VALIDATION_SYSTEM_PROMPT = `Olet italian kielen kääntäjä. Saat numeroidun listan tekstinpätkiä, joiden väitetään olevan italiaa.
+
+Jokaiselle, TÄSMÄLLEEN SAMASSA JÄRJESTYKSESSÄ kuin annettu, palauta:
+- isValidItalian: true VAIN JOS teksti on aidosti kirjoitettu italiaksi (ei suomea, ei muuta kieltä, ei sekasotkuista/korruptoitunutta tekstiä kuten kieliopin termin vääristynyt muoto — esim. "apverbia" tai "taivutusmuotonsa" EIVÄT ole italiaa).
+- finnishTranslation: käännä teksti KOKONAAN ITSE, omasta kielitaidostasi, parhaaksi yleispäteväksi suomennokseksi — ÄLÄ tukeudu mihinkään aiempaan käännökseen, koska sitä ei anneta sinulle. Jos teksti on verbin taivutusmuoto, käännä juuri se taivutusmuoto (esim. "ho" = "minulla on", ei "olen", koska "ho" on avere-verbin eikä essere-verbin muoto). Jos isValidItalian on false, palauta tyhjä merkkijono.
+
+Palauta TÄSMÄLLEEN yhtä monta "items"-alkiota kuin annettiin tekstinpätkiä, samassa järjestyksessä — tämä on kriittistä koska tuloksia yhdistetään alkuperäisiin ehdokkaisiin indeksin perusteella.`;
+
+/**
+ * Toinen, kevyt LLM-tarkistuskutsu ennen tallennusta: varmistaa että
+ * "italian"-kenttä on aidosti italiaa (ei vain suomenkielistä tekstiä ilman
+ * ä/ö-kirjaimia, jota `isValidVocabCandidate` ei tunnista — havaittu
+ * tuotannossa 2026-07-20, esim. "apverbia", "taivutusmuotonsa") ja tuottaa
+ * käännöksen TÄYSIN ITSE ilman alkuperäistä `finnish`-arvoa syötteenä —
+ * jos alkuperäinen annettaisiin vertailtavaksi, malli ankkuroituu siihen ja
+ * jättää selvätkin virheet korjaamatta (havaittu testissä: "ho"/"olen"-virhe
+ * säilyi kun malli sai nähdä alkuperäisen arvon, mutta korjautui oikein kun
+ * käännös piti tuottaa täysin tyhjästä). Palauttaa alkuperäiset ehdokkaat
+ * sellaisenaan jos validointikutsu epäonnistuu tai palauttaa odottamattoman
+ * määrän tuloksia (fail open — ei estä koko poimintaa yhden validointivirheen
+ * takia).
+ */
+async function validateCandidates<
+  T extends { italian: string; finnish: string },
+>(candidates: T[]): Promise<T[]> {
+  try {
+    const { object } = await generateObject({
+      model: resolveModel(),
+      schema: ValidationSchema,
+      system: VALIDATION_SYSTEM_PROMPT,
+      prompt: candidates.map((c, i) => `${i + 1}. ${c.italian}`).join("\n"),
+    });
+
+    if (object.items.length !== candidates.length) {
+      console.error(
+        "extractVocab: validointi palautti väärän määrän tuloksia, ohitetaan validointi",
+      );
+      return candidates;
+    }
+
+    return candidates
+      .map((candidate, i) => ({ candidate, validation: object.items[i] }))
+      .filter(({ validation }) => validation.isValidItalian)
+      .map(({ candidate, validation }) => ({
+        ...candidate,
+        finnish: validation.finnishTranslation || candidate.finnish,
+      }));
+  } catch (error) {
+    console.error("extractVocab: validointikutsu epäonnistui, käytetään alkuperäisiä", error);
+    return candidates;
+  }
+}
+
 /**
  * Poimii assistentin vastauksesta sanastoa taustaprosessina ja tallentaa
  * löydökset `vocabCards`-tauluun. Tarkoitettu ajettavaksi Next.js:n
@@ -137,10 +199,16 @@ export async function extractVocab({
       return;
     }
 
+    const validatedCandidates = await validateCandidates(newCandidates);
+
+    if (validatedCandidates.length === 0) {
+      return;
+    }
+
     const now = Date.now();
     const matchedTopic = findMatchingGrammarTopic(assistantText);
 
-    for (const candidate of newCandidates) {
+    for (const candidate of validatedCandidates) {
       db.insert(vocabCards)
         .values({
           italian: candidate.italian,

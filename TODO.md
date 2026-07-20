@@ -572,6 +572,36 @@ sattumalta tallentunutta (esim. "gli" = sekä "hänelle" että monikon artikkeli
       vastauksen ("kissa"); "gli"-kortti (tallennettu "hänelle, miehelle") hyväksyi vaihtoehtoisen
       artikkelimerkityksen. tsc/eslint puhtaita molempien muutosten jälkeen.
 
+## Bugikorjaus: sanaston käännösvirheiden audit + poimintaputken validointivaihe (2026-07-20)
+
+Käyttäjän huomio: "l'uno" oli merkitty tarkoittavan "toinen" vaikka tarkoittaa "yksi" (rakenteessa
+"l'uno...l'altro" = "yksi...toinen"). Koko 149 rivin sanasto käytiin läpi (general-purpose-agentin
+avulla, itse pistokokein varmistettuna) muiden vastaavien virheiden varalta.
+
+- [x] Korjattu id 83 heti ("l'uno" → "yksi (l'uno... l'altro = yksi... toinen)").
+- [x] Koko sanaston audit paljasti 16 lisää ongelmaa: 2 selvää käännösvirhettä (esim. "la pizza"
+      merkitty "pizzata":ksi), 4 riviä joissa `italian`-kenttä oli itse asiassa suomea ilman ä/ö-
+      kirjaimia (esim. "apverbia", "taivutusmuotonsa" — ohitti vanhan `isValidVocabCandidate`-
+      suodattimen, joka tunnistaa vain ä/ö-kirjaimet), ja 10 pienempää käsite-/muotovirhettä —
+      vakavin toistuva virhe: "ho"/"hai"/"tu hai" merkitty essere-verbin muodoiksi ("olen"/"olet")
+      vaikka ovat avere-verbin muotoja ("minulla on"/"sinulla on"). Kaikki 16 korjattu tietokantaan
+      suoraan (4 kieliopiltaan korjauskelvotonta riviä poistettu review_log-riveineen, loput 12
+      päivitetty). Verifioitu: ei orpoja review_log-rivejä, 156 riviä jäljellä.
+- [x] `lib/extraction/extractVocab.ts`: uusi `validateCandidates()`-vaihe (toinen kevyt
+      `generateObject`-kutsu) suoritetaan duplikaattisuodatuksen jälkeen ennen tallennusta.
+      Tarkistaa jokaisen ehdokkaan `italian`-kentän olevan aidosti italiaa (korvaa/laajentaa vanhaa
+      ä/ö-heuristiikkaa) ja tuottaa suomennoksen TÄYSIN ITSE ilman alkuperäistä arvoa syötteenä.
+      KRIITTINEN löydös testauksessa: kun malli näki alkuperäisen (väärän) käännöksen vertailtavana,
+      se ankkuroitui siihen eikä korjannut edes ilmiselvää virhettä ("ho"→"olen" säilyi 3/3 testissä);
+      kun käännös piti tuottaa tyhjästä ilman alkuperäistä arvoa, virhe korjautui oikein joka kerta
+      ("ho"→"minulla on"). Fail-open: jos validointikutsu epäonnistuu tai palauttaa väärän määrän
+      tuloksia, käytetään alkuperäisiä ehdokkaita sellaisenaan.
+- [x] Testattu tilapäisellä API-reitillä (poistettu testin jälkeen) synteettisillä esimerkeillä
+      (3 ajoa): "apverbia" hylätty joka kerta, "ho" korjautui aina "minulla on":ksi, "gatto"/"kissa"
+      säilyi ennallaan, "la pizza" korjautui ("pizza"/"pitsa", molemmat kelvollisia). Testattu myös
+      koko putki oikealla chat-viestillä (`/api/chat`) — uusia kortteja syntyi odotetusti, ei
+      duplikaatteja, ei roskadataa. tsc/eslint puhtaita.
+
 ## Päätökset ja poikkeamat alkuperäisestä PRD:stä
 
 - Client lähettää API:lle `mode`-tunnisteen (ei valmista `systemPrompt`-merkkijonoa).
