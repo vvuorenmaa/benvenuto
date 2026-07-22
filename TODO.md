@@ -664,3 +664,72 @@ perustelu ja kontrastilaskelmat suunnitelmatiedostosta — tiivistetty alla).
   (`generateObject`, Next.js `after()`), ei tool callingilla kesken streamin — pitää roolileikki-
   promptit (Il Professore/L'Amico/Il Fonetista) koskemattomina ja poiminnan latenssin käyttäjälle
   näkymättömänä. Ks. [docs/architecture-v2.md](docs/architecture-v2.md) §3.
+
+## Etusivu-hub + Koti/Oppitunnit/Profiili/Asetukset-uudistus (suunniteltu 2026-07-22, ei vielä toteutettu)
+
+Käyttäjä tuotti uuden "kawaii-tarra"-tyylisen ikoniarkin (`public/icons/sprite.png`, leikattu
+`extract_icons.py`:llä `public/icons/extracted/`-kansioon, 11/13 tarraa käyttökelpoisia — ks.
+`sprite_icon_10`/`13` ovat rikkinäisiä OpenCV-fragmentteja, hylätään). Tämä on tyylillisesti iso
+harppaus edellisestä minimalistisesta SVG-setistä, ja käynnisti koko sovelluksen visuaalisuuden ja
+tietoarkkitehtuurin uudelleensuunnittelun. Suunniteltu `EnterPlanMode`:lla kahdella
+AskUserQuestion-kierroksella + kaksi HTML-wireframe-artefaktia (asettelu + väritesti) käyttäjän
+kommentoitavaksi ennen koodia. TÄMÄ ON VASTA SUUNNITELMA — kaikki rivit `[ ]`-tilassa.
+
+**Keskeiset päätökset:**
+
+- 5 tarraa (Keskustelu/Kielioppi(chat-tila)/Ääntäminen/Sanasto/Kertaus) vastaavat suoraan sovelluksen
+  5 toimintoa; loput 6 (pizza/torni/paita/viini/skootteri/pylväs) ovat dekoratiivisia, käytetään vain
+  ambient-koristeena Oppitunnit-sivulla.
+- **Uusi IA**: sivupalkki muuttuu 4 feature-kohteesta (Keskustelu/Sanasto/Kertaus/Kielioppi) geneeriseksi
+  Koti/Oppitunnit/Profiili/Asetukset-taksonomiaksi — käyttäjän tietoinen tulevaisuuteen varautuminen
+  ("jos tästä joskus tulisi jotain isompaa"), EI vain tyyliasia. Tietoinen kompromissi: feature-sivut
+  eivät enää näy suoraan sivupalkissa, saavutetaan Oppitunnit-ruudukon kautta (yksi klikkaus lisää).
+- `/` = Koti (kevyt dashboard: tervehdys, tilastorivi, "jatka mihin jäit" -pikakortti, linkki
+  Oppitunniin). `/oppitunnit` (uusi) = täysi 6 tarrakortin ruudukko. `/keskustelu` (entinen `/`) =
+  nykyinen chat sellaisenaan. `/profiili` (uusi) = oikeat tilastot. `/asetukset` (uusi) = `ThemeToggle`
+  siirtyy tänne Sidebarin alareunasta.
+- **"Kulttuuri"-kortti** (6. kortti Oppitunnit-ruudukossa): VAIN visuaalinen, himmennetty +
+  "Tulossa pian" -pilli, ei toimintoa/dataa/reittiä tässä kierroksessa.
+- **"Taso"-idea nostettu backlogiin, EI toteuteta nyt**: referenssikuvassa oli "Taso 10" + tyhjät
+  edistymispalkit (pelillistämistä, joka on jo aiemmin tietoisesti rajattu pois). Päätös: käytetään
+  OIKEAA dataa nyt (Sanasto/Kertaus-korteilla todellinen sanamäärä/onnistumis-%), mutta "Taso"-idea
+  dokumentoidaan näkyvästi `/profiili`-sivulle selvästi "HARKINNASSA — EI VIELÄ TOTEUTETTU"
+  -merkittynä laatikkona (ei katoa unholaan, muttei näytä valmiilta ominaisuudelta). Jos joskus
+  toteutetaan: taso pitää laskea oikeasta datasta (esim. opittujen sanojen määrä), ei keksitystä
+  XP:stä.
+- **Väripaletti PYSYY nykyisenä** (Tailwind stone/green-pastellit edellisestä kierroksesta) —
+  testattu rinnakkain käyttäjän tarralegendan omia brändi-hex-koodeja (`#4CAF50`/`#FF6F4F`/`#4FC3F7`/
+  `#2196F3`/`#FFD700`/`#795548`/tausta `#FFE5D9`) vasten erillisellä väritesti-artefaktilla. Löydös:
+  `#4FC3F7` ja `#2196F3` sekoittuvat lähes samaksi siniseksi kevyinä tint-taustoina (Sanasto/
+  Ääntäminen erottuisivat huonommin), `#795548` muuttuu harmahtavaksi taupeksi läpikuultavana. Käyttäjä
+  valitsi pysyä nykyisessä paletissa.
+- Nimikonflikti-huomio (esiintyi jo ennen tätä suunnitelmaa): chat-tilan "Kielioppi" (roolileikki) ja
+  kirjaston `/kielioppi` ovat kaksi eri ominaisuutta samalla nimellä — Oppitunnit-kortissa
+  täsmentävä alaotsikko erottaa ne.
+
+**Toteutettavat tehtävät:**
+
+- [ ] `git mv app/(app)/page.tsx app/(app)/keskustelu/page.tsx` (chat säilyy sellaisenaan uudessa
+      osoitteessa, tarkista suhteelliset importit)
+- [ ] Uusi `app/(app)/page.tsx` (`/` = Koti): tervehdys, tilastorivi (`/api/vocab?due=true` +
+      `/api/vocab/review-stats`, olemassa olevaa dataa), "jatka mihin jäit" -pikakortti, linkki
+      Oppitunniin
+- [ ] Uusi `app/(app)/oppitunnit/page.tsx`: 6 tarrakortin ruudukko (5 toiminnallista + Kulttuuri
+      himmennettynä), 3 chat-tila-korttia kutsuvat `saveActiveMode()`:a
+      (`lib/chat/sessionStorage.ts`) ennen navigointia `/keskustelu`:un
+- [ ] Uusi `app/(app)/profiili/page.tsx`: oikeat tilastot + "Taso"-harkinnassa-laatikko
+- [ ] Uusi `app/(app)/asetukset/page.tsx`: `ThemeToggle` siirretty tänne, + 2 harmaana näkyvää
+      "tulossa myöhemmin" -riviä (CSV-vienti, ilmoitukset)
+- [ ] `components/Sidebar.tsx`: korvaa 4 feature-nav-kohdetta Koti/Oppitunnit/Profiili/Asetukset-
+      taksonomialla, uudet käsin piirretyt `currentColor`-SVG-ikonit (talo/ruudukko/henkilö/
+      hammasratas), poista `ThemeToggle` sivupalkin alareunasta (siirtyi omalle sivulleen)
+- [ ] Siivoa/nimeä uudelleen 11 käyttökelpoista tarraa selkeiksi tiedostoiksi (esim.
+      `public/icons/stickers/grammar.png`), jätä 2 rikkinäistä fragmenttia (`sprite_icon_10`/`13`)
+      pois; päätä `sprite.png`/`extract_icons.py`/debug-maskien kohtalo (siivota vai jättää)
+- [ ] tsc/eslint/build + Playwright-regressio KAIKILLE reiteille (myös uudet `/keskustelu`,
+      `/oppitunnit`, `/profiili`, `/asetukset`) + a11y-audit kaikille neljälle uudelle sivulle
+- [ ] TODO.md/product-plan.md-päivitys valmiiksi merkittynä, commit+push
+
+**Wireframe-artefaktit** (käyttäjän katsottavissa, ei osa koodikantaa):
+asettelu: `https://claude.ai/code/artifact/7e956e12-cfa5-479a-9b75-b0f7f04517c7`,
+väritesti: `https://claude.ai/code/artifact/7e984d3b-8da0-4a3e-8716-08aef6f20bcc`

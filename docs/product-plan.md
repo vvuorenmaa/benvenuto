@@ -199,3 +199,36 @@ Keskeiset päätökset:
 * Käyttäjä pyysi kesken toteutuksen palaamaan vanhoihin väreihin + laajaa lisälaajennusta — vahvistettu
   AskUserQuestion-kierroksella että Italia-teema pysyy ja lisälaajennus siirtyy erilliseksi
   myöhemmäksi suunnittelukierrokseksi.
+
+## 11. Etusivu-hub + Koti/Oppitunnit/Profiili/Asetukset-uudistus (suunniteltu 2026-07-22, ei vielä toteutettu)
+
+Käyttäjä tuotti uuden "kawaii-tarra"-tyylisen ikoniarkin (`public/icons/sprite.png`, leikattu
+yksittäisiksi tarroiksi `extract_icons.py`:llä), tyylillisesti ison harppauksen edellisestä
+minimalistisesta SVG-setistä. Tämä käynnisti sekä visuaalisen uudistuksen että sovelluksen
+tietoarkkitehtuurin (IA) uudelleenajattelun. Suunniteltu `EnterPlanMode`:lla kahdella
+AskUserQuestion-kierroksella + kaksi HTML-wireframe-artefaktia (asettelu + väritesti), joita vasten
+käyttäjä kommentoi konkreettisesti ennen koodia. Tarkka tehtävälistaus
+[../TODO.md](../TODO.md):ssa.
+
+Keskeiset päätökset:
+
+* **Uusi IA korvaa nykyisen 4-feature-sivupalkin** geneerisellä Koti/Oppitunnit/Profiili/Asetukset-
+  taksonomialla — käyttäjän eksplisiittinen perustelu oli tulevaisuuteen varautuminen ("jos tästä
+  joskus tulisi jotain isompaa"), ei pelkkä tyylivalinta. Suunnittelu kääntyi kesken: ensimmäisellä
+  kierroksella feature-kohtainen sivupalkki päätettiin säilyttää, mutta käyttäjä pyysi harkitsemaan
+  uudelleen — päätös vaihtui toisella kierroksella. Tietoinen kompromissi hyväksyttiin: feature-
+  sivut (Sanasto/Kertaus/Kielioppi/Keskustelu) eivät enää näy suoraan sivupalkissa vaan
+  uuden `/oppitunnit`-koontisivun kautta.
+* **"Kulttuuri"-kortti visuaalisena lisäyksenä** kuudentena Oppitunnit-ruudukossa (dekoratiivisia
+  kulttuuritarroja varten) — käyttäjän valinnalla VAIN visuaalinen/"Tulossa pian", ei oikeaa
+  ominaisuutta/dataa tässä kierroksessa.
+* **Pelillistäminen ("Taso") nostettiin näkyvästi harkittavaksi** ilman että päätöstä sen
+  toteuttamisesta tehtiin — käyttäjän referenssikuva sisälsi tasoja/XP:tä muistuttavan elementin;
+  päätettiin (AskUserQuestion) käyttää oikeaa dataa nyt ja dokumentoida idea selvästi
+  "harkinnassa"-merkittynä tulevalle `/profiili`-sivulle, periaatteella että toteutuessaan tason
+  pitäisi perustua oikeaan dataan (esim. sanamäärä) eikä keksittyyn pistejärjestelmään.
+* **Väripaletti pysyy ennallaan** — käyttäjän toimittamat tarra-arkin omat brändi-hex-koodit
+  testattiin rinnakkain nykyistä Tailwind stone/green-pastellipalettia vasten erillisellä
+  väritesti-artefaktilla. Kahden sinisen sävyn (`#4FC3F7`/`#2196F3`) havaittiin sekoittuvan lähes
+  identtisiksi kevyinä tint-taustoina, ja ruskean (`#795548`) menettävän lämpönsä läpikuultavana —
+  käyttäjä valitsi pysyä nykyisessä, jo kontrastilaskettuna varmennetussa paletissa.
